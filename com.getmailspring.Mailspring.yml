@@ -37,10 +37,21 @@ modules:
   - shared-modules/libsecret/libsecret.json
   - name: mailspring
     buildsystem: simple
+    build-options:
+      env:
+        XDG_CACHE_HOME: /run/build/electron-sample-app/flatpak-node/cache
+        npm_config_cache: /run/build/electron-sample-app/flatpak-node/npm-cache
+        npm_config_nodedir: /usr/lib/sdk/node14
+        npm_config_offline: 'true'
     build-commands:
-      - ar p mailspring.deb data.tar.xz | tar xJ
-      - cp -r usr/* /app
-      - rm -r mailspring.deb usr
+      - npm install --offline
+      # Build the app; in this example the `dist` script
+      # in package.json runs electron-builder
+      - |
+        . ../flatpak-node/electron-builder-arch-args.sh
+        npm run dist -- $ELECTRON_BUILDER_ARCH_ARGS  --linux --dir
+      # Bundle app and dependencies
+      - cp -a dist/linux*unpacked /app/main
       - install -Dm755 start-mailspring /app/bin/start-mailspring
       - install -Dm644 mailspring.appdata.xml /app/share/appdata/mailspring.appdata.xml
       - sed -i 's/<id>mailspring/<id>com.getmailspring.Mailspring/' /app/share/appdata/mailspring.appdata.xml
@@ -48,16 +59,14 @@ modules:
       - install -Dm755 /usr/bin/ar -t /app/bin
       - install -Dm755 /usr/lib/$(gcc -print-multiarch)/libbfd-*.so -t /app/lib
     sources:
-      - type: file
-        only-arches: [x86_64]
-        dest-filename: mailspring.deb
-        url: https://github.com/Foundry376/Mailspring/releases/download/1.9.2/mailspring-1.9.2-amd64.deb
-        sha256: a3bc365c77791673d8b7d8fc2081b2e8e80ab5d78d6ffa99f848971849f43544
+      - type: archive
+        url: https://github.com/Foundry376/Mailspring/archive/refs/tags/1.9.2.tar.gz
+        sha256: 5468c55e4e4c828a0c2eb0bd2ade82537bf7a76f0829468bcf952d24bb6546f2
         x-checker-data:
           type: json
           url: https://api.github.com/repos/Foundry376/Mailspring/releases/latest
           version-query: .tag_name
-          url-query: .assets[]  | select(.name=="mailspring-" + $version + "-amd64.deb") | .browser_download_url
+          url-query: .tarball_url
       - type: script
         dest-filename: start-mailspring
         commands:
