@@ -34,7 +34,6 @@ build-options:
   env:
     NPM_CONFIG_LOGLEVEL: info
 modules:
-  - generated-sources.json
   - shared-modules/libsecret/libsecret.json
   - name: mailspring
     buildsystem: simple
@@ -55,6 +54,7 @@ modules:
           url: https://api.github.com/repos/Foundry376/Mailspring/releases/latest
           version-query: .tag_name
           url-query: .tarball_url
+      - generated-sources.json
       - type: script
         dest-filename: start-mailspring
         commands:
