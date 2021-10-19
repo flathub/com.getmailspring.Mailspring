@@ -34,6 +34,7 @@ build-options:
   env:
     NPM_CONFIG_LOGLEVEL: info
 modules:
+  - generated-sources.json
   - shared-modules/libsecret/libsecret.json
   - name: mailspring
     buildsystem: simple
