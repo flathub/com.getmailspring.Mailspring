@@ -46,7 +46,6 @@ modules:
         # https://stackoverflow.com/questions/25146976/can-i-get-npm-gyp-to-use-ccache
         CXX: ccache g++
         CC: ccache gcc
-    subdir: main
     sources:
       - type: git
         url: https://github.com/Foundry376/Mailspring.git
@@ -65,7 +64,7 @@ modules:
       # Build the app; in this example the `dist` script
       # in package.json runs electron-builder
       - |
-        . ../flatpak-node/electron-builder-arch-args.sh
+        flatpak-node/electron-builder-arch-args.sh
         npm run dist -- $ELECTRON_BUILDER_ARCH_ARGS  --linux --dir
 
       # Remove unneeded files
@@ -90,10 +89,10 @@ modules:
         done
       
       # Launcher
-      - install -Dm755 ../start-mailspring /app/bin/start-mailspring
+      - install -Dm755 start-mailspring /app/bin/start-mailspring
       
       # AppData
-      - install -Dm644 ../mailspring.appdata.xml /app/share/appdata/mailspring.appdata.xml
+      - install -Dm644 mailspring.appdata.xml /app/share/appdata/mailspring.appdata.xml
       - sed -i 's/<id>mailspring/<id>com.getmailspring.Mailspring/' /app/share/appdata/mailspring.appdata.xml
       
       # Extra executables (Are they needed?)
