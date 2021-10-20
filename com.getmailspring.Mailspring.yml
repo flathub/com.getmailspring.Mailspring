@@ -57,8 +57,7 @@ modules:
           - exec env TMPDIR=$XDG_CACHE_HOME zypak-wrapper /app/mailspring/mailspring -s $EXTRA_ARGS \"$@\"
       - type: file
         path: mailspring.appdata.xml
-      - type: file
-        path: generated-sources.json
+      - generated-sources.json
     build-commands:
       - npm install --offline
       # Build the app; in this example the `dist` script
