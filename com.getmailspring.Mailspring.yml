@@ -7,9 +7,6 @@ base-version: '21.08'
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.node14
 separate-locales: false
-rename-icon: mailspring
-rename-appdata-file: mailspring.appdata.xml
-rename-desktop-file: Mailspring.desktop
 command: start-mailspring
 tags: [proprietary]
 finish-args:
@@ -51,23 +48,17 @@ modules:
         CC: ccache gcc
     subdir: main
     sources:
-      - type: archive
-        dest: main
-        url: https://github.com/Foundry376/Mailspring/archive/refs/tags/1.9.2.tar.gz
-        sha256: 5468c55e4e4c828a0c2eb0bd2ade82537bf7a76f0829468bcf952d24bb6546f2
-        x-checker-data:
-          type: json
-          url: https://api.github.com/repos/Foundry376/Mailspring/releases/latest
-          version-query: .tag_name
-          url-query: .tarball_url
+      - type: git
+        url: https://github.com/Foundry376/Mailspring.git
+        tag: 1.9.2
+        commit: 6e14dad1f8b71f444b670aae2dc778a0ddec9cbe
       - type: script
         dest-filename: start-mailspring
         commands:
-          - exec env TMPDIR=$XDG_CACHE_HOME zypak-wrapper /app/main/mailspring -s $EXTRA_ARGS \"$@\"
-      - type: file
-        path: generated-sources.json
+          - exec env TMPDIR=$XDG_CACHE_HOME zypak-wrapper /app/mailspring/mailspring -s $EXTRA_ARGS \"$@\"
       - type: file
         path: mailspring.appdata.xml
+      - generated-sources.json
     build-commands:
       - npm install --offline
       # Build the app; in this example the `dist` script
@@ -75,18 +66,27 @@ modules:
       - |
         . ../flatpak-node/electron-builder-arch-args.sh
         npm run dist -- $ELECTRON_BUILDER_ARCH_ARGS  --linux --dir
-        
-      # Bundle app and dependencies
-      - cp -a dist/linux*unpacked /app/main
+
+      # Remove unneeded files
+      - rm dist/linux*-unpacked/chrome-sandbox
+
+      # Copy the resulting, unpacked directory to /app.
+      - cp -r dist/linux*-unpacked /app/mailspring
       
       # Desktop File
-      - install -Dm644 app/build/resources/linux/Mailspring.desktop.in /app/share/applications/Mailspring.desktop
-      - desktop-file-edit --set-key=Exec --set-value='start-mailspring %U' --set-key=Name --set-value='MailSpring' --set-key=Comment --set-value='The best email app for people and teams at work' --set-key=StartupWMClass --set-value='Mailspring' --remove-category=Productivity --remove-category=Communication /app/share/applications/Mailspring.desktop
+      - install -Dm644 app/build/resources/linux/Mailspring.desktop.in /app/share/applications/$FLATPAK_ID.desktop
+      - >
+        desktop-file-edit --set-key=Exec --set-value='start-mailspring %U'
+        --set-key=Name --set-value='MailSpring'
+        --set-key=Comment --set-value='The best email app for people and teams at work'
+        --set-key=StartupWMClass --set-value='Mailspring'
+        --remove-category=Productivity
+        --remove-category=Communication /app/share/applications/$FLATPAK_ID.desktop
       
-      # Icons
-      - install -Dm644 app/build/resources/linux/icons/64.png /app/share/icons/hicolor/64x64/apps/mailspring.png
-      - install -Dm644 app/build/resources/linux/icons/128.png /app/share/icons/hicolor/128x128/apps/mailspring.png
-      - install -Dm644 app/build/resources/linux/icons/256.png /app/share/icons/hicolor/256x256/apps/mailspring.png
+      # Icons (Retire this at some point when an SVG is available)
+      - for size in 16 32 64 128 256 512; do [[ -e "app/build/resources/linux/icons/${size}.png" ]] && install
+        -Dm644 "app/build/resources/linux/icons/${size}.png" "/app/share/icons/hicolor/${size}x${size}/apps/${FLATPAK_ID}.png";
+        done
       
       # Launcher
       - install -Dm755 ../start-mailspring /app/bin/start-mailspring
