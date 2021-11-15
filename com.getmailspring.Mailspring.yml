@@ -15,7 +15,6 @@ tags: [proprietary]
 finish-args:
   - --share=ipc
   - --socket=fallback-x11
-  - --socket=wayland
   - --socket=pulseaudio
   - --share=network
   - --device=dri
