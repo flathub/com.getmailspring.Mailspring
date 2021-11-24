@@ -11,8 +11,7 @@ command: start-mailspring
 tags: [proprietary]
 finish-args:
   - --share=ipc
-  - --socket=fallback-x11
-  - --socket=wayland
+  - --socket=x11
   - --socket=pulseaudio
   - --share=network
   - --device=dri
@@ -54,8 +53,6 @@ modules:
         dest-filename: start-mailspring
         commands:
           - exec env TMPDIR=$XDG_CACHE_HOME zypak-wrapper /app/mailspring/mailspring -s $EXTRA_ARGS \"$@\"
-      - type: file
-        path: mailspring.appdata.xml
       - generated-sources.json
     build-commands:
       - npm install --offline
@@ -90,8 +87,10 @@ modules:
       - install -Dm755 start-mailspring /app/bin/start-mailspring
       
       # AppData
-      - install -Dm644 mailspring.appdata.xml /app/share/appdata/mailspring.appdata.xml
-      - sed -i 's/<id>mailspring/<id>com.getmailspring.Mailspring/' /app/share/appdata/mailspring.appdata.xml
+      - install -Dm644 app/build/resources/linux/mailspring.appdata.xml.in /app/share/appdata/mailspring.appdata.xml
+      - sed -i 's:<%= name %>:com.getmailspring.Mailspring' /app/share/appdata/mailspring.appdata.xml
+      - sed -i 's:<%= productName %>:Mailspring:g' /app/share/appdata/mailspring.appdata.xml
+      - sed -i 's:<%= description %>:The best email app for people and teams at work' /app/share/appdata/mailspring.appdata.xml
       
       # Extra executables (Are they needed?)
       - install -Dm755 /usr/bin/ar -t /app/bin
