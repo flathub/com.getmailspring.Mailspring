@@ -5,7 +5,7 @@ runtime-version: '21.08'
 base: org.electronjs.Electron2.BaseApp
 base-version: '21.08'
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.node14
+  - org.freedesktop.Sdk.Extension.node16
 separate-locales: false
 command: start-mailspring
 tags: [proprietary]
@@ -33,17 +33,17 @@ modules:
   - name: mailspring
     buildsystem: simple
     build-options:
+      append-path: /usr/lib/sdk/node16/bin
       env:
         # Don't add ELECTRON_CACHE
         XDG_CACHE_HOME: /run/build/mailspring/flatpak-node/cache
         npm_config_cache: /run/build/mailspring/flatpak-node/npm-cache
-        npm_config_nodedir: /usr/lib/sdk/node14
+        npm_config_nodedir: /usr/lib/sdk/node16
         npm_config_offline: 'true'
-        npm_config_no_save: 'true'
+        #npm_config_save: 'false'
+        npm_config_audit: 'false'
+        #npm_config_optional: 'false'
         npm_config_loglevel: verbose
-        # https://stackoverflow.com/questions/25146976/can-i-get-npm-gyp-to-use-ccache
-        CXX: ccache g++
-        CC: ccache gcc
     sources:
       - type: git
         url: https://github.com/Foundry376/Mailspring.git
