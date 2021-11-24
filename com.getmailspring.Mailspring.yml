@@ -47,8 +47,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/Foundry376/Mailspring.git
-        tag: 1.9.2
-        commit: 6e14dad1f8b71f444b670aae2dc778a0ddec9cbe
+        # tag: 1.9.3
+        commit: ac79e44463206013179542eb57576ce93c22065b
       - type: script
         dest-filename: start-mailspring
         commands:
