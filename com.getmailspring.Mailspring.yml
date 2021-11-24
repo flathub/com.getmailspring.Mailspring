@@ -46,9 +46,9 @@ modules:
         npm_config_loglevel: verbose
     sources:
       - type: git
-        url: https://github.com/Foundry376/Mailspring.git
-        # tag: 1.9.3
+        url: git://github.com/Foundry376/Mailspring.git
         commit: ac79e44463206013179542eb57576ce93c22065b
+        # tag: 1.9.3
       - type: script
         dest-filename: start-mailspring
         commands:
