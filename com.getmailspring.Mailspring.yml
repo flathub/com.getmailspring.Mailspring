@@ -22,22 +22,18 @@ finish-args:
   - --system-talk-name=org.freedesktop.login1
   - --talk-name=org.kde.StatusNotifierWatcher
   - --talk-name=com.canonical.AppMenu.Registrar
-build-options:
-  append-path: /usr/lib/sdk/node14/bin
-  cflags: -O2 -g
-  cxxflags: -O2 -g
-  env:
-    NPM_CONFIG_LOGLEVEL: info
 modules:
   - shared-modules/libsecret/libsecret.json
-  - name: mailspring
+  - shared-modules/libappindicator/libappindicator-gtk3-12.10.json
+  - name: Mailspring
     buildsystem: simple
     build-options:
       append-path: /usr/lib/sdk/node16/bin
       env:
-        # Don't add ELECTRON_CACHE
-        XDG_CACHE_HOME: /run/build/mailspring/flatpak-node/cache
-        npm_config_cache: /run/build/mailspring/flatpak-node/npm-cache
+        HUSKY: '0'
+        # Electron get cache dir, with downloaded electron by node-gen
+        XDG_CACHE_HOME: /run/build/Mailspring/flatpak-node/cache
+        npm_config_cache: /run/build/Mailspring/flatpak-node/npm-cache
         npm_config_nodedir: /usr/lib/sdk/node16
         npm_config_offline: 'true'
         #npm_config_save: 'false'
@@ -46,9 +42,9 @@ modules:
         npm_config_loglevel: verbose
     sources:
       - type: git
-        url: git://github.com/Foundry376/Mailspring.git
-        commit: ac79e44463206013179542eb57576ce93c22065b
+        url: https://github.com/Foundry376/Mailspring.git
         # tag: 1.9.3
+        commit: 9ee21cf2b98094128584b3e661ec1a76bdf58552
       - type: script
         dest-filename: start-mailspring
         commands:
@@ -72,11 +68,9 @@ modules:
       - install -Dm644 app/build/resources/linux/Mailspring.desktop.in /app/share/applications/$FLATPAK_ID.desktop
       - >
         desktop-file-edit --set-key=Exec --set-value='start-mailspring %U'
-        --set-key=Name --set-value='MailSpring'
+        --set-key=Name --set-value='Mailspring'
         --set-key=Comment --set-value='The best email app for people and teams at work'
-        --set-key=StartupWMClass --set-value='Mailspring'
-        --remove-category=Productivity
-        --remove-category=Communication /app/share/applications/$FLATPAK_ID.desktop
+        --set-key=StartupWMClass --set-value='Mailspring' /app/share/applications/$FLATPAK_ID.desktop
       
       # Icons (Retire this at some point when an SVG is available)
       - for size in 16 32 64 128 256 512; do [[ -e "app/build/resources/linux/icons/${size}.png" ]] && install
