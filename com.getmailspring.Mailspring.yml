@@ -51,12 +51,12 @@ modules:
           - exec env TMPDIR=$XDG_CACHE_HOME zypak-wrapper /app/mailspring/mailspring -s $EXTRA_ARGS \"$@\"
       - generated-sources.json
     build-commands:
-      - npm install --offline
+      - npm install
       # Build the app; in this example the `dist` script
       # in package.json runs electron-builder
       - |
         flatpak-node/electron-builder-arch-args.sh
-        npm run dist -- $ELECTRON_BUILDER_ARCH_ARGS  --linux --dir
+        npm run-script build -- $ELECTRON_BUILDER_ARCH_ARGS --dir --linux dir
 
       # Remove unneeded files
       - rm dist/linux*-unpacked/chrome-sandbox
@@ -69,6 +69,7 @@ modules:
       - >
         desktop-file-edit --set-key=Exec --set-value='start-mailspring %U'
         --set-key=Name --set-value='Mailspring'
+        --set-key=Icon --set-value='${FLATPAK_ID}'
         --set-key=Comment --set-value='The best email app for people and teams at work'
         --set-key=StartupWMClass --set-value='Mailspring' /app/share/applications/$FLATPAK_ID.desktop
       
