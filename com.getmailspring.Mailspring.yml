@@ -5,11 +5,8 @@ runtime-version: '21.08'
 base: org.electronjs.Electron2.BaseApp
 base-version: '21.08'
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.node14
+  - org.freedesktop.Sdk.Extension.node16
 separate-locales: false
-rename-icon: mailspring
-rename-appdata-file: mailspring.appdata.xml
-rename-desktop-file: Mailspring.desktop
 command: start-mailspring
 tags: [proprietary]
 finish-args:
@@ -25,40 +22,71 @@ finish-args:
   - --system-talk-name=org.freedesktop.login1
   - --talk-name=org.kde.StatusNotifierWatcher
   - --talk-name=com.canonical.AppMenu.Registrar
-build-options:
-  append-path: /usr/lib/sdk/node14/bin
-  cflags: -O2 -g
-  cxxflags: -O2 -g
-  env:
-    NPM_CONFIG_LOGLEVEL: info
 modules:
   - shared-modules/libsecret/libsecret.json
-  - name: mailspring
+  - shared-modules/libappindicator/libappindicator-gtk3-12.10.json
+  - name: Mailspring
     buildsystem: simple
-    build-commands:
-      - ar p mailspring.deb data.tar.xz | tar xJ
-      - cp -r usr/* /app
-      - rm -r mailspring.deb usr
-      - install -Dm755 start-mailspring /app/bin/start-mailspring
-      - install -Dm644 mailspring.appdata.xml /app/share/appdata/mailspring.appdata.xml
-      - sed -i 's/<id>mailspring/<id>com.getmailspring.Mailspring/' /app/share/appdata/mailspring.appdata.xml
-      - desktop-file-edit --set-key=Exec --set-value='start-mailspring %U' --remove-category=Productivity --remove-category=Communication /app/share/applications/Mailspring.desktop
-      - install -Dm755 /usr/bin/ar -t /app/bin
-      - install -Dm755 /usr/lib/$(gcc -print-multiarch)/libbfd-*.so -t /app/lib
+    build-options:
+      append-path: /usr/lib/sdk/node16/bin
+      env:
+        HUSKY: '0'
+        # Electron get cache dir, with downloaded electron by node-gen
+        XDG_CACHE_HOME: /run/build/Mailspring/flatpak-node/cache
+        npm_config_cache: /run/build/Mailspring/flatpak-node/npm-cache
+        npm_config_nodedir: /usr/lib/sdk/node16
+        npm_config_offline: 'true'
+        #npm_config_save: 'false'
+        npm_config_audit: 'false'
+        #npm_config_optional: 'false'
+        npm_config_loglevel: verbose
     sources:
-      - type: file
-        only-arches: [x86_64]
-        dest-filename: mailspring.deb
-        url: https://github.com/Foundry376/Mailspring/releases/download/1.9.2/mailspring-1.9.2-amd64.deb
-        sha256: a3bc365c77791673d8b7d8fc2081b2e8e80ab5d78d6ffa99f848971849f43544
-        x-checker-data:
-          type: json
-          url: https://api.github.com/repos/Foundry376/Mailspring/releases/latest
-          version-query: .tag_name
-          url-query: .assets[]  | select(.name=="mailspring-" + $version + "-amd64.deb") | .browser_download_url
+      - type: git
+        url: https://github.com/Foundry376/Mailspring.git
+        # tag: 1.9.3
+        commit: 9ee21cf2b98094128584b3e661ec1a76bdf58552
       - type: script
         dest-filename: start-mailspring
         commands:
-          - exec env TMPDIR=$XDG_CACHE_HOME zypak-wrapper mailspring -s $EXTRA_ARGS \"$@\"
-      - type: file
-        path: mailspring.appdata.xml
+          - exec env TMPDIR=$XDG_CACHE_HOME zypak-wrapper /app/mailspring/mailspring -s $EXTRA_ARGS \"$@\"
+      - generated-sources.json
+    build-commands:
+      - npm install
+      # Build the app; in this example the `dist` script
+      # in package.json runs electron-builder
+      - |
+        flatpak-node/electron-builder-arch-args.sh
+        npm run-script build -- $ELECTRON_BUILDER_ARCH_ARGS --dir --linux dir
+
+      # Remove unneeded files
+      - rm dist/linux*-unpacked/chrome-sandbox
+
+      # Copy the resulting, unpacked directory to /app.
+      - cp -r dist/linux*-unpacked /app/mailspring
+      
+      # Desktop File
+      - install -Dm644 app/build/resources/linux/Mailspring.desktop.in /app/share/applications/$FLATPAK_ID.desktop
+      - >
+        desktop-file-edit --set-key=Exec --set-value='start-mailspring %U'
+        --set-key=Name --set-value='Mailspring'
+        --set-key=Icon --set-value='${FLATPAK_ID}'
+        --set-key=Comment --set-value='The best email app for people and teams at work'
+        --set-key=StartupWMClass --set-value='Mailspring' /app/share/applications/$FLATPAK_ID.desktop
+      
+      # Icons (Retire this at some point when an SVG is available)
+      - for size in 16 32 64 128 256 512; do [[ -e "app/build/resources/linux/icons/${size}.png" ]] && install
+        -Dm644 "app/build/resources/linux/icons/${size}.png" "/app/share/icons/hicolor/${size}x${size}/apps/${FLATPAK_ID}.png";
+        done
+      
+      # Launcher
+      - install -Dm755 start-mailspring /app/bin/start-mailspring
+      
+      # AppData
+      - install -Dm644 app/build/resources/linux/mailspring.appdata.xml.in /app/share/appdata/mailspring.appdata.xml
+      - sed -i 's:<%= name %>:com.getmailspring.Mailspring' /app/share/appdata/mailspring.appdata.xml
+      - sed -i 's:<%= productName %>:Mailspring:g' /app/share/appdata/mailspring.appdata.xml
+      - sed -i 's:<%= description %>:The best email app for people and teams at work' /app/share/appdata/mailspring.appdata.xml
+      
+      # Extra executables (Are they needed?)
+      - install -Dm755 /usr/bin/ar -t /app/bin
+      - install -Dm755 /usr/lib/$(gcc -print-multiarch)/libbfd-*.so -t /app/lib
