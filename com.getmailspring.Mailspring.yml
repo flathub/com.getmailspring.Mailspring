@@ -59,6 +59,6 @@ modules:
       - type: script
         dest-filename: start-mailspring
         commands:
-          - exec env TMPDIR=$XDG_CACHE_HOME zypak-wrapper mailspring -s $EXTRA_ARGS \"$@\"
+          - exec env TMPDIR=$XDG_CACHE_HOME zypak-wrapper mailspring -s $EXTRA_ARGS "$@"
       - type: file
         path: mailspring.appdata.xml
