@@ -42,23 +42,26 @@ modules:
       - install -Dm755 start-mailspring /app/bin/start-mailspring
       - install -Dm644 mailspring.appdata.xml /app/share/appdata/mailspring.appdata.xml
       - sed -i 's/<id>mailspring/<id>com.getmailspring.Mailspring/' /app/share/appdata/mailspring.appdata.xml
-      - desktop-file-edit --set-key=Exec --set-value='start-mailspring %U' --remove-category=Productivity --remove-category=Communication /app/share/applications/Mailspring.desktop
+      - desktop-file-edit --set-key=Exec --set-value='start-mailspring %U' --remove-category=Productivity
+        --remove-category=Communication /app/share/applications/Mailspring.desktop
       - install -Dm755 /usr/bin/ar -t /app/bin
       - install -Dm755 /usr/lib/$(gcc -print-multiarch)/libbfd-*.so -t /app/lib
     sources:
       - type: file
         only-arches: [x86_64]
         dest-filename: mailspring.deb
-        url: https://github.com/Foundry376/Mailspring/releases/download/1.9.2/mailspring-1.9.2-amd64.deb
-        sha256: a3bc365c77791673d8b7d8fc2081b2e8e80ab5d78d6ffa99f848971849f43544
+        url: https://github.com/Foundry376/Mailspring/releases/download/1.10.0/mailspring-1.10.0-amd64.deb
+        sha256: 1c4b391a5118e9a162a3642a57888ee90ecdbe83dac8122268734b39ae8f7a35
         x-checker-data:
           type: json
           url: https://api.github.com/repos/Foundry376/Mailspring/releases/latest
           version-query: .tag_name
-          url-query: .assets[]  | select(.name=="mailspring-" + $version + "-amd64.deb") | .browser_download_url
+          url-query: .assets[]  | select(.name=="mailspring-" + $version + "-amd64.deb")
+            | .browser_download_url
       - type: script
         dest-filename: start-mailspring
         commands:
-          - exec env TMPDIR=$XDG_CACHE_HOME zypak-wrapper mailspring -s $EXTRA_ARGS "$@"
+          - exec env TMPDIR=$XDG_CACHE_HOME zypak-wrapper mailspring -s $EXTRA_ARGS
+            "$@"
       - type: file
         path: mailspring.appdata.xml
