@@ -14,7 +14,8 @@ command: start-mailspring
 tags: [proprietary]
 finish-args:
   - --share=ipc
-  - --socket=x11
+  - --socket=fallback-x11
+  - --socket=wayland
   - --socket=pulseaudio
   - --share=network
   - --device=dri
@@ -62,5 +63,3 @@ modules:
         commands:
           - exec env TMPDIR=$XDG_CACHE_HOME zypak-wrapper mailspring -s $EXTRA_ARGS
             "$@"
-      - type: file
-        path: mailspring.appdata.xml
