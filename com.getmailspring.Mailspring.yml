@@ -20,11 +20,10 @@ finish-args:
   - --device=dri
   - --filesystem=xdg-download
   - --filesystem=xdg-documents
-  - --talk-name=org.freedesktop.secrets
   - --talk-name=org.freedesktop.Notifications
-  - --system-talk-name=org.freedesktop.login1
   - --talk-name=org.kde.StatusNotifierWatcher
   - --talk-name=com.canonical.AppMenu.Registrar
+  - --talk-name=org.freedesktop.Flatpak
 build-options:
   append-path: /usr/lib/sdk/node16/bin
   cflags: -O2 -g
@@ -64,5 +63,5 @@ modules:
       - type: script
         dest-filename: start-mailspring
         commands:
-          - exec env TMPDIR=$XDG_CACHE_HOME zypak-wrapper mailspring -s $EXTRA_ARGS
-            "$@"
+          - export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
+          - exec zypak-wrapper mailspring "$@"
