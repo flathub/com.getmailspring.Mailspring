@@ -8,7 +8,6 @@ sdk-extensions:
   - org.freedesktop.Sdk.Extension.node16
 separate-locales: false
 command: start-mailspring
-tags: [proprietary]
 finish-args:
   - --share=ipc
   - --socket=x11
@@ -43,12 +42,13 @@ modules:
     sources:
       - type: git
         url: https://github.com/Foundry376/Mailspring.git
-        # tag: 1.9.3
-        commit: 1201bdedb5c8b24b23dfeb6401eabb07283bb3d9
+        tag: 1.10.0
+        # commit: 1201bdedb5c8b24b23dfeb6401eabb07283bb3d9
       - type: script
         dest-filename: start-mailspring
         commands:
-          - exec env TMPDIR=$XDG_CACHE_HOME zypak-wrapper /app/mailspring/mailspring -s $EXTRA_ARGS \"$@\"
+          - exec env TMPDIR=$XDG_CACHE_HOME zypak-wrapper mailspring -s $EXTRA_ARGS
+            "$@"
       - generated-sources.json
     build-commands:
       - npm install
@@ -87,6 +87,6 @@ modules:
       - sed -i 's:<%= productName %>:Mailspring:g' /app/share/appdata/mailspring.appdata.xml
       - sed -i 's:<%= description %>:The best email app for people and teams at work' /app/share/appdata/mailspring.appdata.xml
       
-      # Extra executables (Are they needed?)
+      # Needed by libsecret
       - install -Dm755 /usr/bin/ar -t /app/bin
       - install -Dm755 /usr/lib/$(gcc -print-multiarch)/libbfd-*.so -t /app/lib
