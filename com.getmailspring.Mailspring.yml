@@ -40,7 +40,6 @@ modules:
       - cp -r usr/* /app
       - rm -r mailspring.deb usr
       - install -Dm755 start-mailspring /app/bin/start-mailspring
-      - install -Dm644 mailspring.appdata.xml /app/share/appdata/mailspring.appdata.xml
       - sed -i 's/<id>mailspring/<id>com.getmailspring.Mailspring/' /app/share/appdata/mailspring.appdata.xml
       - desktop-file-edit --set-key=Exec --set-value='start-mailspring %U' --remove-category=Productivity
         --remove-category=Communication /app/share/applications/Mailspring.desktop
