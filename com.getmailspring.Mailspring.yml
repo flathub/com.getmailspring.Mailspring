@@ -52,8 +52,8 @@ modules:
       - type: file
         only-arches: [x86_64]
         dest-filename: mailspring.deb
-        url: https://github.com/Foundry376/Mailspring/releases/download/1.10.5/mailspring-1.10.5-amd64.deb
-        sha256: 795c1bec4d380f319da9f1f84fe824be606dbcdee36b8a3cbbb2ef1e4ff9f352
+        url: https://github.com/Foundry376/Mailspring/releases/download/1.10.6/mailspring-1.10.6-amd64.deb
+        sha256: 890abcbe594e22f6cdf7c3da6a2ad2b7e6977c2114156bdb74ae8bf2389f45cb
         x-checker-data:
           type: json
           url: https://api.github.com/repos/Foundry376/Mailspring/releases/latest
