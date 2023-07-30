@@ -20,6 +20,7 @@ finish-args:
   - --device=dri
   - --filesystem=xdg-download
   - --filesystem=xdg-documents
+  - --talk-name=org.freedesktop.secrets
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
   - --talk-name=com.canonical.AppMenu.Registrar
