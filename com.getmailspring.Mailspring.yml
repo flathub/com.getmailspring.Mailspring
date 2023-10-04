@@ -5,7 +5,7 @@ runtime-version: '23.08'
 base: org.electronjs.Electron2.BaseApp
 base-version: '23.08'
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.node16
+  - org.freedesktop.Sdk.Extension.node18
 separate-locales: false
 rename-icon: mailspring
 rename-appdata-file: mailspring.appdata.xml
