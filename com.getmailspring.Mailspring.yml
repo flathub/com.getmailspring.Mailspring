@@ -20,7 +20,12 @@ finish-args:
   - --device=dri
   - --filesystem=xdg-download
   - --filesystem=xdg-documents
+  # required by the "keep me signed in" feature
+  # see https://github.com/vladimiry/ElectronMail/blob/a154bb61c86d890b77c9d547683163ce4722c64f/images/keep-me-signed-in.png
+  # the "--filesystem=xdg-run/keyring" is added for the persistent logins support
   - --talk-name=org.freedesktop.secrets
+  - --filesystem=xdg-run/keyring
+  # required for notifications in various desktop environments
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
   - --talk-name=com.canonical.AppMenu.Registrar
