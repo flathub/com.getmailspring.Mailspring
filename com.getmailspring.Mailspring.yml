@@ -32,7 +32,6 @@ build-options:
   env:
     NPM_CONFIG_LOGLEVEL: info
 modules:
-  - shared-modules/libsecret/libsecret.json
   - name: mailspring
     buildsystem: simple
     build-commands:
@@ -46,9 +45,6 @@ modules:
       - sed -i 's/<id>mailspring/<id>com.getmailspring.Mailspring/' /app/share/appdata/mailspring.appdata.xml
       - desktop-file-edit --set-key=Exec --set-value='start-mailspring %U' --remove-category=Productivity
         --remove-category=Communication /app/share/applications/Mailspring.desktop
-      # Needed by libsecret
-      - install -Dm755 /usr/bin/ar -t /app/bin
-      - install -Dm755 /usr/lib/$(gcc -print-multiarch)/libbfd-*.so -t /app/lib
     sources:
       - type: file
         only-arches: [x86_64]
