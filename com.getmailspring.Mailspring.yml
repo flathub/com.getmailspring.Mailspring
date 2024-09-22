@@ -1,11 +1,11 @@
 app-id: com.getmailspring.Mailspring
 runtime: org.freedesktop.Platform
 sdk: org.freedesktop.Sdk
-runtime-version: '23.08'
+runtime-version: '30.0.9'
 base: org.electronjs.Electron2.BaseApp
-base-version: '23.08'
+base-version: '30.0.9'
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.node18
+  - org.freedesktop.Sdk.Extension.node20
 separate-locales: false
 rename-icon: mailspring
 rename-appdata-file: mailspring.appdata.xml
@@ -53,8 +53,8 @@ modules:
       - type: file
         only-arches: [x86_64]
         dest-filename: mailspring.deb
-        url: https://github.com/Foundry376/Mailspring/releases/download/1.13.3/mailspring-1.13.3-amd64.deb
-        sha256: d85e64f3345123ac75110d24f30bc8ab54372e7ae7d913a9fccabe1fb56ace57
+        url: https://github.com/Foundry376/Mailspring/releases/download/1.14.0/mailspring-1.14.0-amd64.deb
+        sha256: 66998be9dd1090728ac67f8a1753840de01bd5b169f6ea210686c2bdb944f8bf
         x-checker-data:
           type: json
           url: https://api.github.com/repos/Foundry376/Mailspring/releases/latest
