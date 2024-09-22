@@ -44,7 +44,8 @@ modules:
       - install -Dm755 start-mailspring /app/bin/start-mailspring
       # Modify appdata and desktop file
       - sed -i 's/<id>mailspring/<id>com.getmailspring.Mailspring/' /app/share/appdata/mailspring.appdata.xml
-      - sed -i 's/<screenshot type="default">/<screenshot type="default"><caption>Mailspring Hero<\/caption>/' /app/share/appdata/mailspring.appdata.xml
+      - sed -i 's/<screenshot type="default">/<screenshot type="default"><caption>Mailspring Hero<\/caption><image type="source">/' /app/share/appdata/mailspring.appdata.xml
+      - sed -i 's/<\/screenshot>/<\/image><\/screenshot>/' /app/share/appdata/mailspring.appdata.xml
       - desktop-file-edit --set-key=Exec --set-value='start-mailspring %U' --remove-category=Productivity
         --remove-category=Communication /app/share/applications/Mailspring.desktop
       # Needed by libsecret
