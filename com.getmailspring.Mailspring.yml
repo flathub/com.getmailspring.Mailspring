@@ -36,7 +36,7 @@ modules:
     buildsystem: simple
     build-commands:
       # Extract files from deb
-      - ar p mailspring.deb data.tar.xz | tar xJ
+      - ar p mailspring.deb data.tar.zst | tar -x --zstd
       - cp -r usr/* /app
       - rm -r mailspring.deb usr
       # Copy Installer
