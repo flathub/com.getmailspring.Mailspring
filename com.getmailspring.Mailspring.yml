@@ -36,9 +36,10 @@ modules:
     buildsystem: simple
     build-commands:
       # Extract files from deb
-      - ar p mailspring.deb data.tar.xz | tar xJ
+      - ar x mailspring.deb
+      - tar -xf data.tar.zst      
       - cp -r usr/* /app
-      - rm -r mailspring.deb usr
+      - rm -r mailspring.deb usr control.tar.zst data.tar.zst debian-binary
       # Copy Installer
       - install -Dm755 start-mailspring /app/bin/start-mailspring
       # Modify appdata and desktop file
