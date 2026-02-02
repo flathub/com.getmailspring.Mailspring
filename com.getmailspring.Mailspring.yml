@@ -25,6 +25,7 @@ finish-args:
   - --talk-name=org.kde.StatusNotifierWatcher
   - --talk-name=com.canonical.AppMenu.Registrar
   - --talk-name=org.freedesktop.Flatpak
+  - --talk-name=org.kde.kwalletd6
 build-options:
   append-path: /usr/lib/sdk/node16/bin
   cflags: -O2 -g
