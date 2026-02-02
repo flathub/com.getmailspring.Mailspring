@@ -1,11 +1,11 @@
 app-id: com.getmailspring.Mailspring
 runtime: org.freedesktop.Platform
 sdk: org.freedesktop.Sdk
-runtime-version: '24.08'
+runtime-version: "25.08"
 base: org.electronjs.Electron2.BaseApp
-base-version: '24.08'
+base-version: "25.08"
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.node20
+  - org.freedesktop.Sdk.Extension.node22
 separate-locales: false
 rename-icon: mailspring
 rename-appdata-file: mailspring.appdata.xml
@@ -26,7 +26,7 @@ finish-args:
   - --talk-name=com.canonical.AppMenu.Registrar
   - --talk-name=org.freedesktop.Flatpak
 build-options:
-  append-path: /usr/lib/sdk/node16/bin
+  append-path: /usr/lib/sdk/node22/bin
   cflags: -O2 -g
   cxxflags: -O2 -g
   env:
@@ -36,7 +36,7 @@ modules:
     buildsystem: simple
     build-commands:
       # Extract files from deb
-      - ar p mailspring.deb data.tar.xz | tar xJ
+      - ar p mailspring.deb data.tar.zst | tar --zstd -x
       - cp -r usr/* /app
       - rm -r mailspring.deb usr
       # Copy Installer
@@ -49,16 +49,17 @@ modules:
       - type: file
         only-arches: [x86_64]
         dest-filename: mailspring.deb
-        url: https://github.com/Foundry376/Mailspring/releases/download/1.16.0/mailspring-1.16.0-amd64.deb
-        sha256: 889e95cf0bcd4c846a52af4e58d396392b8b6ea871f8bab1e7ce24bb222c9720
+        url: https://github.com/Foundry376/Mailspring/releases/download/1.17.3/mailspring-1.17.3-amd64.deb
+        sha256: 7039ebf13c5e5581fd112d7e97d26a802a163bd21c5c6662b3e90d3555870a64
         x-checker-data:
           type: json
           url: https://api.github.com/repos/Foundry376/Mailspring/releases/latest
           version-query: .tag_name
-          url-query: .assets[]  | select(.name=="mailspring-" + $version + "-amd64.deb")
+          url-query:
+            .assets[]  | select(.name=="mailspring-" + $version + "-amd64.deb")
             | .browser_download_url
       - type: script
         dest-filename: start-mailspring
         commands:
           - export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
-          - exec zypak-wrapper mailspring "$@"
+          - exec zypak-wrapper mailspring --enable-features=UseOzonePlatform --ozone-platform=x11 "$@"
