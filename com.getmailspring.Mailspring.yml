@@ -49,8 +49,8 @@ modules:
       - type: file
         only-arches: [x86_64]
         dest-filename: mailspring.deb
-        url: https://github.com/Foundry376/Mailspring/releases/download/1.17.3/mailspring-1.17.3-amd64.deb
-        sha256: 7039ebf13c5e5581fd112d7e97d26a802a163bd21c5c6662b3e90d3555870a64
+        url: https://github.com/Foundry376/Mailspring/releases/download/1.17.4/mailspring-1.17.4-amd64.deb
+        sha256: 3c7c5ee38cb35fd673f9f42edf4917f5ea4b11e1b7c2aa952f7a79f991cc9a8b
         x-checker-data:
           type: json
           url: https://api.github.com/repos/Foundry376/Mailspring/releases/latest
@@ -62,4 +62,4 @@ modules:
         dest-filename: start-mailspring
         commands:
           - export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
-          - exec zypak-wrapper mailspring --enable-features=UseOzonePlatform --ozone-platform=x11 "$@"
+          - exec zypak-wrapper mailspring "$@"
