@@ -37,8 +37,9 @@ modules:
     build-commands:
       # Extract files from deb
       - ar p mailspring.deb data.tar.zst | tar --zstd -x
+      - ar p libtidy.deb data.tar.gz | tar -xz
       - cp -r usr/* /app
-      - rm -r mailspring.deb usr
+      - rm -r mailspring.deb libtidy.deb usr
       # Copy Installer
       - install -Dm755 start-mailspring /app/bin/start-mailspring
       # Modify appdata and desktop file
@@ -62,3 +63,9 @@ modules:
         commands:
           - export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
           - exec zypak-wrapper mailspring "$@"
+      # Dependencies
+      - type: file
+        only_arches: [x86_64]
+        dest-filename: libtidy.deb
+        url: https://github.com/htacg/tidy-html5/releases/download/5.8.0/tidy-5.8.0-Linux-64bit.deb
+        sha256: 59e594312207234f5a17455683c13c6bc47a89cb7bf994d493acfffb591d9830
