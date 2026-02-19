@@ -62,6 +62,7 @@ modules:
         dest-filename: start-mailspring
         commands:
           - export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
+          - ls -la /usr/lib/x86_64-linux-gnu/libcurl*
           - exec zypak-wrapper mailspring "$@"
       # Dependencies
       - type: file
