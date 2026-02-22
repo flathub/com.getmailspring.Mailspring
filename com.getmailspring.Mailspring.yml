@@ -1,11 +1,11 @@
 app-id: com.getmailspring.Mailspring
 runtime: org.freedesktop.Platform
 sdk: org.freedesktop.Sdk
-runtime-version: '24.08'
+runtime-version: '25.08'
 base: org.electronjs.Electron2.BaseApp
-base-version: '24.08'
+base-version: '25.08'
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.node20
+  - org.freedesktop.Sdk.Extension.node24
 separate-locales: false
 rename-icon: mailspring
 rename-appdata-file: mailspring.appdata.xml
@@ -13,7 +13,7 @@ rename-desktop-file: Mailspring.desktop
 command: start-mailspring
 finish-args:
   - --share=ipc
-  - --socket=x11
+  - --socket=fallback-x11
   - --socket=wayland
   - --socket=pulseaudio
   - --share=network
@@ -25,40 +25,76 @@ finish-args:
   - --talk-name=org.kde.StatusNotifierWatcher
   - --talk-name=com.canonical.AppMenu.Registrar
   - --talk-name=org.freedesktop.Flatpak
-build-options:
-  append-path: /usr/lib/sdk/node16/bin
-  cflags: -O2 -g
-  cxxflags: -O2 -g
-  env:
-    NPM_CONFIG_LOGLEVEL: info
 modules:
-  - name: mailspring
-    buildsystem: simple
-    build-commands:
-      # Extract files from deb
-      - ar p mailspring.deb data.tar.xz | tar xJ
-      - cp -r usr/* /app
-      - rm -r mailspring.deb usr
-      # Copy Installer
-      - install -Dm755 start-mailspring /app/bin/start-mailspring
-      # Modify appdata and desktop file
-      - sed -i 's/<id>mailspring/<id>com.getmailspring.Mailspring/' /app/share/appdata/mailspring.appdata.xml
-      - desktop-file-edit --set-key=Exec --set-value='start-mailspring %U' --remove-category=Productivity
-        --remove-category=Communication /app/share/applications/Mailspring.desktop
+  - name: libctemplate
+    buildsystem: autotools
     sources:
-      - type: file
-        only-arches: [x86_64]
-        dest-filename: mailspring.deb
-        url: https://github.com/Foundry376/Mailspring/releases/download/1.16.0/mailspring-1.16.0-amd64.deb
-        sha256: 889e95cf0bcd4c846a52af4e58d396392b8b6ea871f8bab1e7ce24bb222c9720
-        x-checker-data:
-          type: json
-          url: https://api.github.com/repos/Foundry376/Mailspring/releases/latest
-          version-query: .tag_name
-          url-query: .assets[]  | select(.name=="mailspring-" + $version + "-amd64.deb")
-            | .browser_download_url
+      - type: archive
+        url: https://github.com/OlafvdSpek/ctemplate/archive/refs/tags/ctemplate-2.4.tar.gz
+        sha256: ccc4105b3dc51c82b0f194499979be22d5a14504f741115be155bd991ee93cfa
+
+  - name: libtidy
+    buildsystem: cmake
+    sources:
+      - type: archive
+        url: https://github.com/htacg/tidy-html5/archive/refs/tags/5.8.0.tar.gz
+        sha256: 59c86d5b2e452f63c5cdb29c866a12a4c55b1741d7025cf2f3ce0cde99b0660e
+    config-opts:
+      - -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+
+  - name: libcares
+    buildsystem: cmake
+    sources:
+      - type: archive
+        url: https://github.com/c-ares/c-ares/archive/refs/tags/v1.34.6.tar.gz
+        sha256: 4358939ff800b13b92f37d5fdda003718101faedfbdee792d6b79ddc1a53d890
+
+  - name: Mailspring
+    buildsystem: simple
+    sources:
+      - type: git
+        url: https://github.com/Foundry376/Mailspring.git
+        tag: 1.17.4
+      - type: patch
+        paths:
+          - patches/libetpan-mailstream_sll.patch
+          - patches/libmailcore2-cmake.patch
+          - patches/libmailcore2-zip.patch
+          - patches/mailsync-cmake.patch
+          - patches/mailsync-build.patch
+          - patches/mailspring-gruntfile.patch
       - type: script
         dest-filename: start-mailspring
         commands:
           - export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
-          - exec zypak-wrapper mailspring "$@"
+          - exec zypak-wrapper /app/share/mailspring/mailspring "$@"
+    build-options:
+      build-args:
+        - --share=network
+      append-path: /usr/lib/sdk/node24/bin
+      env:
+        CMAKE_INSTALL_PREFIX: /app          # Install to /app instead of /usr
+        CMAKE_POLICY_VERSION_MINIMUM: "3.5" # The oldest version supported by SDK 25.08
+        MAKEFLAGS: "-j$(nproc)"
+    build-commands:
+      # Build mailsync
+      - cd mailsync && ./build.sh
+
+      # Build Mailspring
+      - npm ci
+      - npm run build
+
+      # Update the templates
+      - sed -i 's|<%= name %>|com.getmailspring.Mailspring|g'                           app/build/resources/linux/Mailspring.desktop.in app/build/resources/linux/mailspring.appdata.xml.in
+      - sed -i 's|<%= productName %>|Mailspring|g'                                      app/build/resources/linux/Mailspring.desktop.in app/build/resources/linux/mailspring.appdata.xml.in
+      - sed -i 's|<%= description %>|The best email app for people and teams at work|g' app/build/resources/linux/Mailspring.desktop.in app/build/resources/linux/mailspring.appdata.xml.in
+      - sed -i 's|Exec=mailspring %U|Exec=start-mailspring %U|g'                        app/build/resources/linux/Mailspring.desktop.in
+
+      # Package the app
+      - cp -r app/dist/mailspring-linux-x64 /app/share/mailspring
+      - install -Dm755 start-mailspring /app/bin/start-mailspring
+      - install -Dm644 app/build/resources/linux/Mailspring.desktop.in /app/share/applications/Mailspring.desktop
+      - install -Dm644 app/build/resources/linux/mailspring.appdata.xml.in /app/share/appdata/mailspring.appdata.xml
+      - for size in 16 32 64 128 256 512; do
+          [[ -e "app/build/resources/linux/icons/${size}.png" ]] && install -Dm644 "app/build/resources/linux/icons/${size}.png" "/app/share/icons/hicolor/${size}x${size}/apps/mailspring.png";
+        done

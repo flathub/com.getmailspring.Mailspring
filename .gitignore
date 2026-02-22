@@ -1,3 +1,5 @@
+.flatpak
 .flatpak-builder
-build
+.vscode
 build-dir
+Mailspring

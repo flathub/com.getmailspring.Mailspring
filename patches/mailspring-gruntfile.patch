@@ -1,0 +1,14 @@
+Mailspring by default builds the project, and then creates .deb and .rpm packages.
+We neither have the tooling to create those packages, nor do we want them, so just run the build step.
+We package the result ourself in the manifest.
+
+--- a/app/build/Gruntfile.js	2026-02-22 19:36:04.924119220 +0100
++++ b/app/build/Gruntfile.js	2026-02-22 19:36:26.387055163 +0100
+@@ -55,6 +55,6 @@
+   } else if (grunt.option('platform') === 'darwin') {
+     grunt.registerTask('build-client', ['package', 'create-mac-zip']);
+   } else if (grunt.option('platform') === 'linux') {
+-    grunt.registerTask('build-client', ['package', 'create-deb-installer', 'create-rpm-installer']);
++    grunt.registerTask('build-client', ['package']);
+   }
+ };

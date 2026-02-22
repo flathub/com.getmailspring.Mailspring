@@ -1,0 +1,53 @@
+Mailsync what to statically link against a lot, because it fears other versions in runtime than buildtime.
+This is not a problem in the flatpak, we always have the exact same version.
+Freedesktop SDK also doesn't ship static libraries, so this saves us from having to build them ourselves.
+
+Also libetpan was built by us, so it is static, but in the app prefix
+
+--- a/mailsync/CMakeLists.txt	2026-02-22 19:33:07.444569446 +0100
++++ b/mailsync/CMakeLists.txt	2026-02-22 19:34:03.334165422 +0100
+@@ -66,34 +66,34 @@
+
+   target_link_libraries(mailsync libMailCore.a)
+   target_link_libraries(mailsync ${GLIB_LIBRARIES})
+-  target_link_libraries(mailsync libetpan.a)
++  target_link_libraries(mailsync /app/lib/libetpan.a)
+
+-  find_library(XML_LIB NAMES libxml2.a libxml2)
++  find_library(XML_LIB NAMES libxml2.a libxml2.so)
+   target_link_libraries(mailsync ${XML_LIB})
+   target_include_directories(mailsync PRIVATE /usr/include/libxml2)
+
+-  find_library(LZMA_LIB NAMES liblzma.a liblzma)
++  find_library(LZMA_LIB NAMES liblzma.a liblzma.so)
+   target_link_libraries(mailsync ${LZMA_LIB})
+
+-  find_library(Z_LIB NAMES libz.a libz)
++  find_library(Z_LIB NAMES libz.a libz.so)
+   target_link_libraries(mailsync ${Z_LIB})
+
+-  find_library(RESOLV_LIB NAMES libresolv.a libresolv)
++  find_library(RESOLV_LIB NAMES libresolv.a libresolv.so)
+   target_link_libraries(mailsync ${RESOLV_LIB})
+
+-  find_library(CTEMPLATE_LIB NAMES libctemplate.a libctemplate)
++  find_library(CTEMPLATE_LIB NAMES libctemplate.a libctemplate.so)
+   target_link_libraries(mailsync ${CTEMPLATE_LIB})
+
+-  find_library(UUID_LIB NAMES libuuid.a libuuid)
++  find_library(UUID_LIB NAMES libuuid.a libuuid.so)
+   target_link_libraries(mailsync ${UUID_LIB})
+
+-  find_library(ICUI18N_LIB NAMES libicui18n.a libicui18n)
++  find_library(ICUI18N_LIB NAMES libicui18n.a libicui18n.so)
+   target_link_libraries(mailsync ${ICUI18N_LIB})
+
+-  find_library(ICUUC_LIB NAMES libicuuc.a libicuuc)
++  find_library(ICUUC_LIB NAMES libicuuc.a libicuuc.so)
+   target_link_libraries(mailsync ${ICUUC_LIB})
+
+-  find_library(ICUDATA_LIB NAMES libicudata.a libicudata)
++  find_library(ICUDATA_LIB NAMES libicudata.a libicudata.so)
+   target_link_libraries(mailsync ${ICUDATA_LIB})
+
+   pkg_check_modules(CARES REQUIRED libcares)
