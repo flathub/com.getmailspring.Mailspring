@@ -1,4 +1,4 @@
-No sudo in the flatpak, remove it
+No sudo in the flatpak, simply remove it, we have all permissions we need to install to /app
 Our prefix is /app, not /usr, so change that too
 No dpkg-architecture in the flatpak, hardcode the multiarch path for x86_64-linux-gnu
   TODO: this is the only bit left that would need to be changed for other architectures, can we detect it in some way?

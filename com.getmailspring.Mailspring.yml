@@ -57,7 +57,7 @@ modules:
         tag: 1.17.4
       - type: patch
         paths:
-          - patches/libetpan-mailstream_sll.patch
+          - patches/libetpan-mailstream_ssl.patch
           - patches/libmailcore2-cmake.patch
           - patches/libmailcore2-zip.patch
           - patches/mailsync-cmake.patch

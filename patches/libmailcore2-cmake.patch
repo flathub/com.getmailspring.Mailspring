@@ -1,6 +1,6 @@
 mailcore2 depends on icu.
 The icu headers provided by the freedesktop sdk require c++17 to build, so bump it.
-The rest builds fine with c++17, so this is an easy fix.
+The project builds fine with c++17, so this is an easy fix.
 
 --- a/mailsync/Vendor/mailcore2/CMakeLists.txt	2026-02-22 19:13:42.111382600 +0100
 +++ b/mailsync/Vendor/mailcore2/CMakeLists.txt	2026-02-22 19:27:41.938339292 +0100

@@ -1,8 +1,6 @@
-Mailsync what to statically link against a lot, because it fears other versions in runtime than buildtime.
-This is not a problem in the flatpak, we always have the exact same version.
+Mailsync wants to statically link against a lot of libs, because it fears different versions between buildtime and runtime.
+This is not a problem for flatpak, because we always have the exact same version.
 Freedesktop SDK also doesn't ship static libraries, so this saves us from having to build them ourselves.
-
-Also libetpan was built by us, so it is static, but in the app prefix
 
 --- a/mailsync/CMakeLists.txt	2026-02-22 19:33:07.444569446 +0100
 +++ b/mailsync/CMakeLists.txt	2026-02-22 19:34:03.334165422 +0100
@@ -11,7 +9,7 @@ Also libetpan was built by us, so it is static, but in the app prefix
    target_link_libraries(mailsync libMailCore.a)
    target_link_libraries(mailsync ${GLIB_LIBRARIES})
 -  target_link_libraries(mailsync libetpan.a)
-+  target_link_libraries(mailsync /app/lib/libetpan.a)
++  target_link_libraries(mailsync /app/lib/libetpan.a) # We built it, so it is in /app/lib
 
 -  find_library(XML_LIB NAMES libxml2.a libxml2)
 +  find_library(XML_LIB NAMES libxml2.a libxml2.so)

@@ -1,6 +1,6 @@
 The compiler complains about struct stack_st_x509* not being the same as struct stack_st*
 Cast it, so that it compiles. _Should_ be safe given the layout of the structs.
-This should probably be upstreamed, because it will run into the same issue once the toolchain is updated.
+This should probably be upstreamed, because they will run into the same issue once their toolchain is updated.
 
 --- a/mailsync/Vendor/libetpan/src/data-types/mailstream_ssl.c	2026-02-22 19:13:41.947074453 +0100
 +++ b/mailsync/Vendor/libetpan/src/data-types/mailstream_ssl.c	2026-02-22 19:18:59.737021173 +0100

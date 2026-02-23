@@ -1,6 +1,7 @@
-Mailspring by default builds the project, and then creates .deb and .rpm packages.
-We neither have the tooling to create those packages, nor do we want them, so just run the build step.
+Mailsprings "npm run build" builds the project and then creates .deb and .rpm packages.
+We neither have the tooling to create those packages, nor do we want them, so run just the build step.
 We package the result ourself in the manifest.
+Maybe talk to upstream about adding an option to "npm run build", which allows skipping the packaging step.
 
 --- a/app/build/Gruntfile.js	2026-02-22 19:36:04.924119220 +0100
 +++ b/app/build/Gruntfile.js	2026-02-22 19:36:26.387055163 +0100
