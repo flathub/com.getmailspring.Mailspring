@@ -1,31 +1,49 @@
 app-id: com.getmailspring.Mailspring
 runtime: org.freedesktop.Platform
-sdk: org.freedesktop.Sdk
 runtime-version: '25.08'
 base: org.electronjs.Electron2.BaseApp
 base-version: '25.08'
+sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.node24
+
 separate-locales: false
 rename-icon: mailspring
 rename-appdata-file: mailspring.appdata.xml
 rename-desktop-file: Mailspring.desktop
 command: start-mailspring
+
 finish-args:
-  - --share=ipc
-  - --socket=fallback-x11
-  - --socket=wayland
-  - --socket=pulseaudio
+  # Electron apps need this to work properly
   - --share=network
+  - --share=ipc
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --socket=pulseaudio
   - --device=dri
+
+  # Saving of attachments
   - --filesystem=xdg-download
   - --filesystem=xdg-documents
-  - --talk-name=org.freedesktop.secrets
+
+  # Desktop integration
   - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.freedesktop.ScreenSaver
+  - --filesystem=xdg-run/pipewire-0
+  - --env=XCURSOR_PATH=/run/host/user-share/icons:/run/host/share/icons
+
+  # Secret storage
+  - --talk-name=org.freedesktop.secrets
+  - --talk-name=org.kde.kwalletd5
+  - --talk-name=org.kde.kwalletd6
+
+  # Status notifier and app menu support
   - --talk-name=org.kde.StatusNotifierWatcher
   - --talk-name=com.canonical.AppMenu.Registrar
-  - --talk-name=org.freedesktop.Flatpak
-  - --talk-name=org.kde.kwalletd6
+
+  # Battery awareness
+  - --system-talk-name=org.freedesktop.UPower
+
 modules:
   - name: libctemplate
     buildsystem: autotools
