@@ -1,0 +1,26 @@
+Mailspring uses dpkg-architecture to detect the multiarch library path, but that doesn't work on non-Debian-based distributions, like our freedesktop SDK.
+Using gcc -print-multiarch instead is portable and gives the same output.
+
+--- a/mailsync/CMakeLists.txt	2026-02-23 21:06:55.795578564 +0100
++++ b/mailsync/CMakeLists.txt	2026-02-23 21:10:53.512975226 +0100
+@@ -18,7 +18,7 @@
+   # Detect Debian/Ubuntu multiarch library path (e.g. /usr/lib/aarch64-linux-gnu)
+   # so that find_library() works on ARM64 and other non-x86 architectures
+   execute_process(
+-    COMMAND dpkg-architecture -qDEB_HOST_MULTIARCH
++    COMMAND gcc -print-multiarch
+     OUTPUT_VARIABLE DEB_HOST_MULTIARCH
+     OUTPUT_STRIP_TRAILING_WHITESPACE
+     ERROR_QUIET
+
+--- a/mailsync/build.sh	2026-02-23 21:06:57.181611207 +0100
++++ b/mailsync/build.sh	2026-02-23 21:08:42.100160809 +0100
+@@ -57,7 +57,7 @@
+ 
+   # copy libsasl2's modules into the target directory because they're all shipped separately
+   # (We set SASL_PATH below so it finds these.)
+-  MULTIARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH)
++  MULTIARCH=$(gcc -print-multiarch)
+   cp /usr/lib/${MULTIARCH}/sasl2/* "$APP_ROOT_DIR"
+ 
+   printf "#!/bin/bash\nset -e\nset -o pipefail\nSCRIPTPATH=\"\$( cd \"\$(dirname \"\$0\")\" >/dev/null 2>&1 ; pwd -P )\"\nSASL_PATH=\"\$SCRIPTPATH\" LD_LIBRARY_PATH=\"\$SCRIPTPATH:\$LD_LIBRARY_PATH\" \"\$SCRIPTPATH/mailsync.bin\" \"\$@\"" > "$APP_ROOT_DIR/mailsync"

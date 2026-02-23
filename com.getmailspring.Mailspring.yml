@@ -80,6 +80,7 @@ modules:
           - patches/libmailcore2-zip.patch
           - patches/mailsync-cmake.patch
           - patches/mailsync-build.patch
+          - patches/mailsync-multiarch.patch
           - patches/mailspring-gruntfile.patch
       - type: file
         path: mailspring.sh

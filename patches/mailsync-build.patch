@@ -1,7 +1,5 @@
 No sudo in the flatpak, simply remove it, we have all permissions we need to install to /app
 Our prefix is /app, not /usr, so change that too
-No dpkg-architecture in the flatpak, hardcode the multiarch path for x86_64-linux-gnu
-  TODO: this is the only bit left that would need to be changed for other architectures, can we detect it in some way?
 
 --- a/mailsync/build.sh	2026-02-22 19:31:44.640160721 +0100
 +++ b/mailsync/build.sh	2026-02-22 19:31:57.006665613 +0100
@@ -14,12 +12,3 @@ No dpkg-architecture in the flatpak, hardcode the multiarch path for x86_64-linu
 
    # build mailcore2
    echo "Building mailcore2..."
-@@ -57,7 +57,7 @@
-
-   # copy libsasl2's modules into the target directory because they're all shipped separately
-   # (We set SASL_PATH below so it finds these.)
--  MULTIARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH)
-+  MULTIARCH="x86_64-linux-gnu"
-   cp /usr/lib/${MULTIARCH}/sasl2/* "$APP_ROOT_DIR"
-
-   printf "#!/bin/bash\nset -e\nset -o pipefail\nSCRIPTPATH=\"\$( cd \"\$(dirname \"\$0\")\" >/dev/null 2>&1 ; pwd -P )\"\nSASL_PATH=\"\$SCRIPTPATH\" LD_LIBRARY_PATH=\"\$SCRIPTPATH:\$LD_LIBRARY_PATH\" \"\$SCRIPTPATH/mailsync.bin\" \"\$@\"" > "$APP_ROOT_DIR/mailsync"
