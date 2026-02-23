@@ -6,7 +6,7 @@ base-version: '25.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.node24
-command: start-mailspring
+command: mailspring
 separate-locales: false
 rename-icon: mailspring
 rename-appdata-file: mailspring.appdata.xml
@@ -82,7 +82,7 @@ modules:
           - patches/mailsync-build.patch
           - patches/mailspring-gruntfile.patch
       - type: file
-        path: start-mailspring.sh
+        path: mailspring.sh
     build-options:
       build-args:
         - --share=network
@@ -103,11 +103,10 @@ modules:
       - sed -i 's|<%= name %>|com.getmailspring.Mailspring|g'                           app/build/resources/linux/Mailspring.desktop.in app/build/resources/linux/mailspring.appdata.xml.in
       - sed -i 's|<%= productName %>|Mailspring|g'                                      app/build/resources/linux/Mailspring.desktop.in app/build/resources/linux/mailspring.appdata.xml.in
       - sed -i 's|<%= description %>|The best email app for people and teams at work|g' app/build/resources/linux/Mailspring.desktop.in app/build/resources/linux/mailspring.appdata.xml.in
-      - sed -i 's|Exec=mailspring|Exec=start-mailspring|g'                              app/build/resources/linux/Mailspring.desktop.in
 
       # Package the app
       - cp -r app/dist/mailspring-linux-x64 /app/share/mailspring
-      - install -Dm755 start-mailspring.sh /app/bin/start-mailspring
+      - install -Dm755 mailspring.sh /app/bin/mailspring
       - install -Dm644 app/build/resources/linux/Mailspring.desktop.in /app/share/applications/Mailspring.desktop
       - install -Dm644 app/build/resources/linux/mailspring.appdata.xml.in /app/share/appdata/mailspring.appdata.xml
       - for size in 16 32 64 128 256 512; do

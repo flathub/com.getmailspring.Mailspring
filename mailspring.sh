@@ -10,7 +10,7 @@ else
     EXTRA_ARGS="--ozone-platform=x11"
 fi
 
-# TMPDIR must point to XDG_RUNTIME_DIR so that Chromium's shared-memory segments are on a tmpfs that is visible to all processes in the sandbox.
-exec \
-    env TMPDIR="${XDG_RUNTIME_DIR}/app/${FLATPAK_ID}" \
-    zypak-wrapper /app/share/mailspring/mailspring ${EXTRA_ARGS} "$@"
+# TMPDIR must point to XDG_RUNTIME_DIR so that Chromium's shared-memory segments are on a tmpfs that is visible to all processes in the sandbox
+export TMPDIR="${XDG_RUNTIME_DIR}/app/${FLATPAK_ID}"
+
+exec zypak-wrapper /app/share/mailspring/mailspring ${EXTRA_ARGS} "$@"
