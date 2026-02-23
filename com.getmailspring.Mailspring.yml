@@ -6,9 +6,7 @@ base-version: '25.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.node24
-
 command: start-mailspring
-
 separate-locales: false
 rename-icon: mailspring
 rename-appdata-file: mailspring.appdata.xml
@@ -105,7 +103,7 @@ modules:
       - sed -i 's|<%= name %>|com.getmailspring.Mailspring|g'                           app/build/resources/linux/Mailspring.desktop.in app/build/resources/linux/mailspring.appdata.xml.in
       - sed -i 's|<%= productName %>|Mailspring|g'                                      app/build/resources/linux/Mailspring.desktop.in app/build/resources/linux/mailspring.appdata.xml.in
       - sed -i 's|<%= description %>|The best email app for people and teams at work|g' app/build/resources/linux/Mailspring.desktop.in app/build/resources/linux/mailspring.appdata.xml.in
-      - sed -i 's|Exec=mailspring %U|Exec=start-mailspring %U|g'                        app/build/resources/linux/Mailspring.desktop.in
+      - sed -i 's|Exec=mailspring|Exec=start-mailspring|g'                              app/build/resources/linux/Mailspring.desktop.in
 
       # Package the app
       - cp -r app/dist/mailspring-linux-x64 /app/share/mailspring
