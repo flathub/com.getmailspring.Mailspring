@@ -50,18 +50,25 @@ modules:
       - type: archive
         url: https://github.com/OlafvdSpek/ctemplate/archive/refs/tags/ctemplate-2.4.tar.gz
         sha256: ccc4105b3dc51c82b0f194499979be22d5a14504f741115be155bd991ee93cfa
+    cleanup:
+      - /bin # template-converter, make_tpl_varnames_h, diff_tpl_auto_escape
+      - /lib/*_nothreads.*
 
   - name: libtidy
     buildsystem: cmake
+    config-opts:
+      - -DCMAKE_POLICY_VERSION_MINIMUM=3.5
     sources:
       - type: archive
         url: https://github.com/htacg/tidy-html5/archive/refs/tags/5.8.0.tar.gz
         sha256: 59c86d5b2e452f63c5cdb29c866a12a4c55b1741d7025cf2f3ce0cde99b0660e
-    config-opts:
-      - -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+    cleanup:
+      - /bin # tidy
 
   - name: libcares
     buildsystem: cmake
+    config-opts:
+      - -DCARES_BUILD_TOOLS=Off
     sources:
       - type: archive
         url: https://github.com/c-ares/c-ares/archive/refs/tags/v1.34.6.tar.gz
@@ -120,3 +127,12 @@ modules:
       - for size in 16 32 64 128 256 512; do
           [[ -e "app/build/resources/linux/icons/${size}.png" ]] && install -Dm644 "app/build/resources/linux/icons/${size}.png" "/app/share/icons/hicolor/${size}x${size}/apps/mailspring.png";
         done
+
+cleanup:
+  - /include
+  - /share/doc
+  - /share/man
+  - /lib/cmake
+  - /lib/pkgconfig
+  - /lib/*.a
+  - /lib/*.la
