@@ -73,6 +73,7 @@ modules:
       - type: git
         url: https://github.com/Foundry376/Mailspring.git
         tag: 1.18.0
+        commit: d519939069369f292f2645b71e7d6e65b9b570bc
       - type: patch
         paths:
           - patches/libetpan-mailstream_ssl.patch
@@ -82,16 +83,22 @@ modules:
           - patches/mailsync-build.patch
           - patches/mailsync-multiarch.patch
           - patches/mailspring-gruntfile.patch
+          - patches/mailspring-postinstall.patch
       - type: file
         path: mailspring.sh
+      - generated-sources.json
     build-options:
-      build-args:
-        - --share=network
-      append-path: /usr/lib/sdk/node24/bin
+      prepend-path: /usr/lib/sdk/node24/bin
       env:
         CMAKE_INSTALL_PREFIX: /app          # Install to /app instead of /usr
         CMAKE_POLICY_VERSION_MINIMUM: "3.5" # The oldest version supported by SDK 25.08
         MAKEFLAGS: "-j$(nproc)"
+
+        # https://github.com/flatpak/flatpak-builder-tools/tree/master/node
+        XDG_CACHE_HOME: /run/build/Mailspring/flatpak-node/cache
+        npm_config_cache: /run/build/Mailspring/flatpak-node/npm-cache
+        npm_config_offline: "true"
+        npm_package_config_node_gyp_nodedir: /run/build/Mailspring/flatpak-node/cache/node-gyp/39.2.7
     build-commands:
       # Build mailsync
       - cd mailsync && ./build.sh
