@@ -113,7 +113,7 @@ modules:
       - sed -i 's|<%= description %>|The best email app for people and teams at work|g' app/build/resources/linux/Mailspring.desktop.in app/build/resources/linux/mailspring.appdata.xml.in
 
       # Package the app
-      - cp -r app/dist/mailspring-linux-x64 /app/share/mailspring
+      - cp -r app/dist/mailspring-linux-* /app/share/mailspring
       - install -Dm755 mailspring.sh /app/bin/mailspring
       - install -Dm644 app/build/resources/linux/Mailspring.desktop.in /app/share/applications/Mailspring.desktop
       - install -Dm644 app/build/resources/linux/mailspring.appdata.xml.in /app/share/appdata/mailspring.appdata.xml
