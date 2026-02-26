@@ -1,0 +1,17 @@
+The compiler complains about struct stack_st_x509* not being the same as struct stack_st*
+Cast it, so that it compiles. _Should_ be safe given the layout of the structs.
+This should probably be upstreamed, because they will run into the same issue once their toolchain is updated.
+
+--- a/mailsync/Vendor/libetpan/src/data-types/mailstream_ssl.c	2026-02-22 19:13:41.947074453 +0100
++++ b/mailsync/Vendor/libetpan/src/data-types/mailstream_ssl.c	2026-02-22 19:18:59.737021173 +0100
+@@ -1550,8 +1550,8 @@
+   }
+   
+   result = carray_new(4);
+-  for(skpos = 0 ; skpos < sk_num(skx) ; skpos ++) {
+-    X509 * x = (X509 *) sk_value(skx, skpos);
++  for(skpos = 0 ; skpos < sk_num((const OPENSSL_STACK*)skx) ; skpos ++) {
++    X509 * x = (X509 *) sk_value((const OPENSSL_STACK*)skx, skpos);
+     unsigned char * p;
+     MMAPString * str;
+     int length = i2d_X509(x, NULL);

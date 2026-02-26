@@ -1,0 +1,14 @@
+No sudo in the flatpak, simply remove it, we have all permissions we need to install to /app
+Our prefix is /app, not /usr, so change that too
+
+--- a/mailsync/build.sh	2026-02-22 19:31:44.640160721 +0100
++++ b/mailsync/build.sh	2026-02-22 19:31:57.006665613 +0100
+@@ -32,7 +32,7 @@
+   cd "$MAILSYNC_DIR/Vendor/libetpan"
+   ./autogen.sh --with-openssl=/opt/openssl
+   make >/dev/null
+-  sudo make install prefix=/usr >/dev/null
++  make install prefix=/app >/dev/null
+
+   # build mailcore2
+   echo "Building mailcore2..."

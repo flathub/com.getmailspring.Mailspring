@@ -1,0 +1,16 @@
+"npm dedupe" can download new packages from the registry.
+This doesn't work for our offline builds, and there seems to be no support for it in flatpak-node-generator.
+Since this is just an optimization step, we can safely skip it for our builds.
+
+--- a/scripts/postinstall.js	2026-02-24 10:45:08.101842606 +0100
++++ b/scripts/postinstall.js	2026-02-24 10:45:20.385763092 +0100
+@@ -147,9 +147,6 @@
+   // run `npm install` in ./app with Electron NPM config
+   await npm(`install --no-audit`, { cwd: './app', env: 'electron' });
+ 
+-  // run `npm dedupe` in ./app with Electron NPM config
+-  await npm(`dedupe --no-audit`, { cwd: './app', env: 'electron' });
+-
+   // run `npm ls` in ./app - detects missing peer dependencies, etc.
+   await npm(`ls`, { cwd: './app', env: 'electron' });
+ 

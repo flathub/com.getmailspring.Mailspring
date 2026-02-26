@@ -1,0 +1,15 @@
+const unsigned int* is not the same as const unsigned long* on all platforms, our compiler complains about it.
+This was fixed by the MiniZip project 14 years ago! https://github.com/zlib-ng/minizip-ng/blob/5cdf2ca001d6613bafb6530719d38ab15499e73f/unzip.c#L1776
+Mailsync should probly not only upstream this patch, but update the whole MiniZip library source code...
+
+--- a/mailsync/Vendor/mailcore2/src/core/zip/MiniZip/zip.c	2026-02-22 19:13:42.129006253 +0100
++++ b/mailsync/Vendor/mailcore2/src/core/zip/MiniZip/zip.c	2026-02-22 19:23:15.753107071 +0100
+@@ -1246,7 +1246,7 @@
+         unsigned char bufHead[RAND_HEAD_LEN];
+         unsigned int sizeHead;
+         zi->ci.encrypt = 1;
+-        zi->ci.pcrc_32_tab = get_crc_table();
++        zi->ci.pcrc_32_tab = (const unsigned long*)get_crc_table();
+         /*init_keys(password,zi->ci.keys,zi->ci.pcrc_32_tab);*/
+
+         sizeHead=crypthead(password,bufHead,RAND_HEAD_LEN,zi->ci.keys,zi->ci.pcrc_32_tab,crcForCrypting);
