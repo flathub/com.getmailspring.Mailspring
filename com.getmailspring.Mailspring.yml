@@ -28,7 +28,6 @@ finish-args:
   # Desktop integration
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.freedesktop.ScreenSaver
-  - --filesystem=xdg-run/pipewire-0
   - --env=XCURSOR_PATH=/run/host/user-share/icons:/run/host/share/icons
 
   # Secret storage
@@ -115,7 +114,7 @@ modules:
       - npm run build
 
       # Update the templates
-      - sed -i 's|<%= name %>|com.getmailspring.Mailspring|g'                           app/build/resources/linux/Mailspring.desktop.in app/build/resources/linux/mailspring.appdata.xml.in
+      - sed -i 's|<%= name %>|mailspring|g'                                             app/build/resources/linux/Mailspring.desktop.in app/build/resources/linux/mailspring.appdata.xml.in
       - sed -i 's|<%= productName %>|Mailspring|g'                                      app/build/resources/linux/Mailspring.desktop.in app/build/resources/linux/mailspring.appdata.xml.in
       - sed -i 's|<%= description %>|The best email app for people and teams at work|g' app/build/resources/linux/Mailspring.desktop.in app/build/resources/linux/mailspring.appdata.xml.in
 
