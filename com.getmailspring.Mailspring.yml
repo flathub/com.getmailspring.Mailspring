@@ -103,8 +103,6 @@ modules:
         # https://github.com/flatpak/flatpak-builder-tools/tree/master/node
         XDG_CACHE_HOME: /run/build/Mailspring/flatpak-node/cache
         npm_config_cache: /run/build/Mailspring/flatpak-node/npm-cache
-        npm_config_offline: "true"
-        npm_package_config_node_gyp_nodedir: /run/build/Mailspring/flatpak-node/cache/node-gyp/39.2.7
     build-commands:
       # Build mailsync
       - cd mailsync && ./build.sh
