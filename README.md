@@ -32,10 +32,9 @@ git rev-parse HEAD
 
 # generate the generated-sources.json file
 # See https://github.com/flatpak/flatpak-builder-tools/blob/master/node/README.md
-flatpak-node-generator npm --electron-node-headers -r package-lock.json -o ../generated-sources.json
+flatpak-node-generator npm --node-sdk-extension org.freedesktop.Sdk.Extension.node24//25.08 --electron-node-headers -r package-lock.json -o ../generated-sources.json
 ```
 
 Then in `com.getmailspring.Mailspring.yml`:
 * update the `tag` and `commit` fields with the new version and hash
-* update the `npm_package_config_node_gyp_nodedir` field with the correct electron version (from `package.json`)
 * ensure that the patches are still required and work correctly. Add new patches if necessary.
