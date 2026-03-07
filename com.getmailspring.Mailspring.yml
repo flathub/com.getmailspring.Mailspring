@@ -68,6 +68,16 @@ modules:
         url: https://github.com/c-ares/c-ares/archive/refs/tags/v1.34.6.tar.gz
         sha256: 4358939ff800b13b92f37d5fdda003718101faedfbdee792d6b79ddc1a53d890
 
+  - name: addr2line
+    buildsystem: autotools
+    no-make-install: true
+    sources:
+      - type: archive
+        url: https://ftp.gnu.org/pub/gnu/binutils/binutils-2.46.0.tar.gz
+        sha256: 8608fe44ab7de645f6ad0a898313b75338842490d609adb85c9fb2827c376af2
+    post-install:
+      - install -Dm755 binutils/addr2line /app/bin/addr2line
+
   - name: Mailspring
     buildsystem: simple
     sources:
