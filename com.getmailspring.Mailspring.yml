@@ -110,6 +110,7 @@ modules:
       # Build Mailspring
       - npm ci
       - npm run build
+      - patch-desktop-filename app/dist/mailspring-linux-*/resources/app.asar
 
       # Update the templates
       - sed -i 's|<%= name %>|mailspring|g'                                             app/build/resources/linux/Mailspring.desktop.in app/build/resources/linux/mailspring.appdata.xml.in
@@ -124,6 +125,8 @@ modules:
       - for size in 16 32 64 128 256 512; do
           [[ -e "app/build/resources/linux/icons/${size}.png" ]] && install -Dm644 "app/build/resources/linux/icons/${size}.png" "/app/share/icons/hicolor/${size}x${size}/apps/mailspring.png";
         done
+    cleanup:
+      - /bin/libetpan-config
 
 cleanup:
   - /include
