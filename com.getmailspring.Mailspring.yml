@@ -25,11 +25,6 @@ finish-args:
   - --filesystem=xdg-download
   - --filesystem=xdg-documents
 
-  # Desktop integration
-  - --talk-name=org.freedesktop.Notifications
-  - --talk-name=org.freedesktop.ScreenSaver
-  - --env=XCURSOR_PATH=/run/host/user-share/icons:/run/host/share/icons
-
   # Secret storage
   - --talk-name=org.freedesktop.secrets
   - --talk-name=org.kde.kwalletd5
