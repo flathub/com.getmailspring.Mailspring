@@ -98,7 +98,12 @@ modules:
       env:
         CMAKE_INSTALL_PREFIX: /app          # Install to /app instead of /usr
         CMAKE_POLICY_VERSION_MINIMUM: "3.5" # The oldest version supported by SDK 25.08
-        MAKEFLAGS: "-j$(nproc)"
+        MAKEFLAGS: "-j$(nproc)"             # Faster compilation
+
+        # Always build with debug info, flatpak will strip it into a separate .Debug extension
+        CFLAGS: "-O2 -g"                 # autotools (e.g. libetpan)
+        CXXFLAGS: "-O2 -g"               # autotools
+        CMAKE_BUILD_TYPE: RelWithDebInfo # CMake (e.g. mailsync, mailcore2, SQLiteCpp)
 
         # https://github.com/flatpak/flatpak-builder-tools/tree/master/node
         XDG_CACHE_HOME: /run/build/Mailspring/flatpak-node/cache
