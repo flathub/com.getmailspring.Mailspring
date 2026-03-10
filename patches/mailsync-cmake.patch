@@ -29,7 +29,7 @@ Freedesktop SDK also doesn't ship static libraries, so this saves us from having
    target_link_libraries(mailsync ${RESOLV_LIB})
 
 -  find_library(CTEMPLATE_LIB NAMES libctemplate.a libctemplate)
-+  find_library(CTEMPLATE_LIB NAMES libctemplate.a libctemplate.so)
++  find_library(CTEMPLATE_LIB NAMES libctemplate.so)
    target_link_libraries(mailsync ${CTEMPLATE_LIB})
 
 -  find_library(UUID_LIB NAMES libuuid.a libuuid)
