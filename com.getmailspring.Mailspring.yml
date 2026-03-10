@@ -83,8 +83,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/Foundry376/Mailspring.git
-        tag: 1.18.0
-        commit: d519939069369f292f2645b71e7d6e65b9b570bc
+        tag: 1.19.0
+        commit: 29769fadb7668c8e94be072b60e1509576b1c5f3
       - type: patch
         paths:
           - patches/libetpan-mailstream_ssl.patch
@@ -137,6 +137,7 @@ modules:
         done
     cleanup:
       - /bin/libetpan-config
+      - /share/mailspring/chrome-sandbox # Not needed, we use zypak
 
 cleanup:
   - /include
@@ -146,3 +147,5 @@ cleanup:
   - /lib/pkgconfig
   - /lib/*.a
   - /lib/*.la
+  - /lib/python* # From BaseApp, required by patch-desktop-filename, which we only use during build
+  - /bin/patch-desktop-filename
