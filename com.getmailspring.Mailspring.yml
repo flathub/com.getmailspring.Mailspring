@@ -84,7 +84,7 @@ modules:
       - type: git
         url: https://github.com/Foundry376/Mailspring.git
         tag: 1.19.0
-        commit: 29769fadb7668c8e94be072b60e1509576b1c5f3
+        commit: e3e741a7d625237068b91fdb1cfb1baba17a2b7e
       - type: patch
         paths:
           - patches/libetpan-mailstream_ssl.patch
@@ -113,14 +113,15 @@ modules:
         # https://github.com/flatpak/flatpak-builder-tools/tree/master/node
         XDG_CACHE_HOME: /run/build/Mailspring/flatpak-node/cache
         npm_config_cache: /run/build/Mailspring/flatpak-node/npm-cache
+        npm_config_offline: "true"
     build-commands:
       # Build mailsync
       - cd mailsync && ./build.sh
 
       # Build Mailspring
+      - "jq '. + {\"desktopName\": \"com.getmailspring.Mailspring.desktop\"}' app/package.json > app/package.json.tmp && mv app/package.json.tmp app/package.json"
       - npm ci
       - npm run build
-      - patch-desktop-filename app/dist/mailspring-linux-*/resources/app.asar
 
       # Update the templates
       - sed -i 's|<%= name %>|mailspring|g'                                             app/build/resources/linux/Mailspring.desktop.in app/build/resources/linux/mailspring.appdata.xml.in
@@ -147,5 +148,3 @@ cleanup:
   - /lib/pkgconfig
   - /lib/*.a
   - /lib/*.la
-  - /lib/python* # From BaseApp, required by patch-desktop-filename, which we only use during build
-  - /bin/patch-desktop-filename
