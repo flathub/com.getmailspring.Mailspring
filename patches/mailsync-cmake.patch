@@ -1,6 +1,21 @@
+Mailspring uses dpkg-architecture to detect the multiarch library path, but that doesn't work on non-Debian-based distributions, like our freedesktop SDK.
+Using gcc -print-multiarch instead is portable and gives the same output.
+
 Mailsync wants to statically link against a lot of libs, because it fears different versions between buildtime and runtime.
 This is not a problem for flatpak, because we always have the exact same version.
 Freedesktop SDK also doesn't ship static libraries, so this saves us from having to build them ourselves.
+
+--- a/mailsync/CMakeLists.txt	2026-02-23 21:06:55.795578564 +0100
++++ b/mailsync/CMakeLists.txt	2026-02-23 21:10:53.512975226 +0100
+@@ -18,7 +18,7 @@
+   # Detect Debian/Ubuntu multiarch library path (e.g. /usr/lib/aarch64-linux-gnu)
+   # so that find_library() works on ARM64 and other non-x86 architectures
+   execute_process(
+-    COMMAND dpkg-architecture -qDEB_HOST_MULTIARCH
++    COMMAND gcc -print-multiarch
+     OUTPUT_VARIABLE DEB_HOST_MULTIARCH
+     OUTPUT_STRIP_TRAILING_WHITESPACE
+     ERROR_QUIET
 
 --- a/mailsync/CMakeLists.txt	2026-02-22 19:33:07.444569446 +0100
 +++ b/mailsync/CMakeLists.txt	2026-02-22 19:34:03.334165422 +0100

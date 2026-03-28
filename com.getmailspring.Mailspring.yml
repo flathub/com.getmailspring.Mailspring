@@ -38,6 +38,7 @@ finish-args:
   - --system-talk-name=org.freedesktop.UPower
 
 modules:
+  # Dependency of MailCore2 and mailsync, dynamically linked
   - name: libctemplate
     buildsystem: autotools
     sources:
@@ -48,6 +49,7 @@ modules:
       - /bin # template-converter, make_tpl_varnames_h, diff_tpl_auto_escape
       - /lib/*_nothreads.*
 
+  # Dependency of mailsync. dlopens libtidy.so.5 at runtime
   - name: libtidy
     buildsystem: cmake
     config-opts:
@@ -59,15 +61,17 @@ modules:
     cleanup:
       - /bin # tidy
 
+  # Dependency of mailsync. dynamically linked
   - name: libcares
     buildsystem: cmake
     config-opts:
       - -DCARES_BUILD_TOOLS=Off
     sources:
       - type: archive
-        url: https://github.com/c-ares/c-ares/archive/refs/tags/v1.34.6.tar.gz
-        sha256: 4358939ff800b13b92f37d5fdda003718101faedfbdee792d6b79ddc1a53d890
+        url: https://github.com/c-ares/c-ares/releases/download/v1.34.6/c-ares-1.34.6.tar.gz
+        sha256: 912dd7cc3b3e8a79c52fd7fb9c0f4ecf0aaa73e45efda880266a2d6e26b84ef5
 
+  # Dependency of mailsync. Executed by StanfordCPppLib logs at runtime when an error occured.
   - name: addr2line
     buildsystem: autotools
     no-make-install: true
@@ -77,6 +81,21 @@ modules:
         sha256: 8608fe44ab7de645f6ad0a898313b75338842490d609adb85c9fb2827c376af2
     post-install:
       - install -Dm755 binutils/addr2line /app/bin/addr2line
+
+  # Dependency of mailsync. Dynamically linked. We use this over the system libsasl2 because we need liblogin.so
+  - name: libsasl2
+    buildsystem: autotools
+    build-options:
+      cflags: --std=gnu17
+    config-opts:
+      - --enable-login
+    sources:
+      - type: archive
+        url: https://github.com/cyrusimap/cyrus-sasl/releases/download/cyrus-sasl-2.1.27/cyrus-sasl-2.1.27.tar.gz
+        sha256: 26866b1549b00ffd020f188a43c258017fa1c382b3ddadd8201536f72efb05d5
+    cleanup:
+      - /sbin
+      - /lib/sasl2/*.la
 
   - name: Mailspring
     buildsystem: simple
@@ -92,7 +111,6 @@ modules:
           - patches/libmailcore2-zip.patch
           - patches/mailsync-cmake.patch
           - patches/mailsync-build.patch
-          - patches/mailsync-multiarch.patch
           - patches/mailspring-gruntfile.patch
           - patches/mailspring-postinstall.patch
       - type: file
@@ -129,13 +147,14 @@ modules:
       - sed -i 's|<%= description %>|The best email app for people and teams at work|g' app/build/resources/linux/Mailspring.desktop.in app/build/resources/linux/mailspring.appdata.xml.in
 
       # Package the app
-      - cp -r app/dist/mailspring-linux-* /app/share/mailspring
+      - cp -r app/dist/mailspring-linux-* /app/share/mailspring && find /app/share/mailspring -type d -exec chmod 755 {} \;
       - install -Dm755 mailspring.sh /app/bin/mailspring
       - install -Dm644 app/build/resources/linux/Mailspring.desktop.in /app/share/applications/Mailspring.desktop
       - install -Dm644 app/build/resources/linux/mailspring.appdata.xml.in /app/share/appdata/mailspring.appdata.xml
       - for size in 16 32 64 128 256 512; do
           [[ -e "app/build/resources/linux/icons/${size}.png" ]] && install -Dm644 "app/build/resources/linux/icons/${size}.png" "/app/share/icons/hicolor/${size}x${size}/apps/mailspring.png";
         done
+      - install -Dm644 app/build/resources/linux/icons/512.png /app/share/pixmaps/com.getmailspring.Mailspring.png
     cleanup:
       - /bin/libetpan-config
       - /share/mailspring/chrome-sandbox # Not needed, we use zypak
