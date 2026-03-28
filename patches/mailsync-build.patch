@@ -1,14 +1,40 @@
 No sudo in the flatpak, simply remove it, we have all permissions we need to install to /app
 Our prefix is /app, not /usr, so change that too
 
---- a/mailsync/build.sh	2026-02-22 19:31:44.640160721 +0100
-+++ b/mailsync/build.sh	2026-02-22 19:31:57.006665613 +0100
+We want the sasl2 that we build, simply remove everything funky mailspring does here, so ours will be used.
+Also no need to zip the results, as we do not upload them to S3
+
+--- a/mailsync/build.sh	2026-03-28 18:13:15.020858597 +0100
++++ b/mailsync/build.sh	2026-03-28 18:25:13.425397535 +0100
 @@ -32,7 +32,7 @@
    cd "$MAILSYNC_DIR/Vendor/libetpan"
    ./autogen.sh --with-openssl=/opt/openssl
    make >/dev/null
 -  sudo make install prefix=/usr >/dev/null
 +  make install prefix=/app >/dev/null
-
+ 
    # build mailcore2
    echo "Building mailcore2..."
+@@ -51,21 +51,8 @@
+   # copy build product into the client working directory.
+   cp "$MAILSYNC_DIR/mailsync" "$APP_ROOT_DIR/mailsync.bin"
+ 
+-  # copy libsasl2 (and potentially others - just add to grep expression)
+-  # into the target directory since we don't want to depend on installed version
+-  ldd "$MAILSYNC_DIR/mailsync" | grep "=> /" | awk '{print $3}' | grep "libsasl2" | xargs -I '{}' cp -v '{}' "$APP_ROOT_DIR"
+-
+-  # copy libsasl2's modules into the target directory because they're all shipped separately
+-  # (We set SASL_PATH below so it finds these.)
+-  MULTIARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH)
+-  cp /usr/lib/${MULTIARCH}/sasl2/* "$APP_ROOT_DIR"
+-
+-  printf "#!/bin/bash\nset -e\nset -o pipefail\nSCRIPTPATH=\"\$( cd \"\$(dirname \"\$0\")\" >/dev/null 2>&1 ; pwd -P )\"\nSASL_PATH=\"\$SCRIPTPATH\" LD_LIBRARY_PATH=\"\$SCRIPTPATH:\$LD_LIBRARY_PATH\" \"\$SCRIPTPATH/mailsync.bin\" \"\$@\"" > "$APP_ROOT_DIR/mailsync"
++  printf "#!/bin/bash\nset -e\nset -o pipefail\nSCRIPTPATH=\"\$( cd \"\$(dirname \"\$0\")\" >/dev/null 2>&1 ; pwd -P )\"\n\"\$SCRIPTPATH/mailsync.bin\" \"\$@\"" > "$APP_ROOT_DIR/mailsync"
+   chmod +x "$APP_ROOT_DIR/mailsync"
+-
+-  # Zip this stuff up so we can push it to S3 as a single artifacts
+-  cd "$APP_ROOT_DIR"
+-  tar -czf "$APP_DIST_DIR/mailsync.tar.gz" --wildcards *.so* mailsync mailsync.bin
+ else
+   echo "Mailsync does not build on $OSTYPE yet.";
+ fi
