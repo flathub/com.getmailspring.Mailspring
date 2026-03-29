@@ -21,24 +21,19 @@ finish-args:
   - --socket=pulseaudio
   - --device=dri
 
-  # Saving of attachments
-  - --filesystem=xdg-download
-  - --filesystem=xdg-documents
-
   # Secret storage
   - --talk-name=org.freedesktop.secrets
   - --talk-name=org.kde.kwalletd5
   - --talk-name=org.kde.kwalletd6
 
-  # Status notifier and app menu support
+  # System tray
   - --talk-name=org.kde.StatusNotifierWatcher
-  - --talk-name=com.canonical.AppMenu.Registrar
 
   # Battery awareness
   - --system-talk-name=org.freedesktop.UPower
 
 modules:
-  # Dependency of MailCore2 and mailsync, dynamically linked
+  # Dependency of MailCore2 and mailsync. Dynamically linked.
   - name: libctemplate
     buildsystem: autotools
     sources:
@@ -49,7 +44,7 @@ modules:
       - /bin # template-converter, make_tpl_varnames_h, diff_tpl_auto_escape
       - /lib/*_nothreads.*
 
-  # Dependency of mailsync. dlopens libtidy.so.5 at runtime
+  # Dependency of mailsync. dlopens libtidy.so.5 at runtime.
   - name: libtidy
     buildsystem: cmake
     config-opts:
@@ -61,7 +56,7 @@ modules:
     cleanup:
       - /bin # tidy
 
-  # Dependency of mailsync. dynamically linked
+  # Dependency of mailsync. Dynamically linked.
   - name: libcares
     buildsystem: cmake
     config-opts:
@@ -71,7 +66,7 @@ modules:
         url: https://github.com/c-ares/c-ares/releases/download/v1.34.6/c-ares-1.34.6.tar.gz
         sha256: 912dd7cc3b3e8a79c52fd7fb9c0f4ecf0aaa73e45efda880266a2d6e26b84ef5
 
-  # Dependency of mailsync. Executed by StanfordCPppLib logs at runtime when an error occured.
+  # Dependency of mailsync. Executed by StanfordCppLib logs at runtime when an error occured.
   - name: addr2line
     buildsystem: autotools
     no-make-install: true
@@ -82,7 +77,7 @@ modules:
     post-install:
       - install -Dm755 binutils/addr2line /app/bin/addr2line
 
-  # Dependency of mailsync. Dynamically linked. We use this over the system libsasl2 because we need liblogin.so
+  # Dependency of mailsync. Dynamically linked. We use this over the system libsasl2 because we need liblogin.so.
   - name: libsasl2
     buildsystem: autotools
     build-options:
@@ -154,7 +149,6 @@ modules:
       - for size in 16 32 64 128 256 512; do
           [[ -e "app/build/resources/linux/icons/${size}.png" ]] && install -Dm644 "app/build/resources/linux/icons/${size}.png" "/app/share/icons/hicolor/${size}x${size}/apps/mailspring.png";
         done
-      - install -Dm644 app/build/resources/linux/icons/512.png /app/share/pixmaps/com.getmailspring.Mailspring.png
     cleanup:
       - /bin/libetpan-config
       - /share/mailspring/chrome-sandbox # Not needed, we use zypak
