@@ -77,13 +77,29 @@ modules:
     post-install:
       - install -Dm755 binutils/addr2line /app/bin/addr2line
 
-  # Dependency of mailsync. Dynamically linked. We use this over the system libsasl2 because we need liblogin.so.
+  # Dependency of libsasl2. Dynamically linked if present at buildtime. Required for libgs2.so and libgssapiv2.so
+  - name: libkrb5
+    buildsystem: autotools
+    subdir: src
+    license-files:
+      - NOTICE
+    sources:
+      - type: archive
+        url: https://kerberos.org/dist/krb5/1.22/krb5-1.22.2.tar.gz
+        sha256: 3243ffbc8ea4d4ac22ddc7dd2a1dc54c57874c40648b60ff97009763554eaf13
+    cleanup:
+      - /bin
+      - /sbin
+
+  # Dependency of mailsync. Dynamically linked. We use this over the system libsasl2 because we need additional auth mechanisms.
   - name: libsasl2
     buildsystem: autotools
     build-options:
       cflags: --std=gnu17
     config-opts:
-      - --enable-login
+      - --enable-login      # liblogin.so, disabled by default, required for some SMTP servers
+      - --enable-ntlm       # libntlm.so, disabled by default, required for Microsoft 365 accounts
+      - --with-gss_impl=mit # Use MIT Kerberos for GSSAPI support, which we built above.
     sources:
       - type: archive
         url: https://github.com/cyrusimap/cyrus-sasl/releases/download/cyrus-sasl-2.1.27/cyrus-sasl-2.1.27.tar.gz
@@ -157,6 +173,7 @@ cleanup:
   - /include
   - /share/doc
   - /share/man
+  - /share/examples
   - /lib/cmake
   - /lib/pkgconfig
   - /lib/*.a
