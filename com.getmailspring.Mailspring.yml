@@ -40,6 +40,11 @@ modules:
       - type: archive
         url: https://github.com/OlafvdSpek/ctemplate/archive/refs/tags/ctemplate-2.4.tar.gz
         sha256: ccc4105b3dc51c82b0f194499979be22d5a14504f741115be155bd991ee93cfa
+        x-checker-data:
+          type: anitya
+          project-id: 376
+          stable-only: true
+          url-template: https://github.com/OlafvdSpek/ctemplate/archive/refs/tags/ctemplate-$version.tar.gz
     cleanup:
       - /bin # template-converter, make_tpl_varnames_h, diff_tpl_auto_escape
       - /lib/*_nothreads.*
@@ -53,6 +58,11 @@ modules:
       - type: archive
         url: https://github.com/htacg/tidy-html5/archive/refs/tags/5.8.0.tar.gz
         sha256: 59c86d5b2e452f63c5cdb29c866a12a4c55b1741d7025cf2f3ce0cde99b0660e
+        x-checker-data:
+          type: anitya
+          project-id: 13267
+          stable-only: true
+          url-template: https://github.com/htacg/tidy-html5/archive/refs/tags/$version.tar.gz
     cleanup:
       - /bin # tidy
 
@@ -65,6 +75,11 @@ modules:
       - type: archive
         url: https://github.com/c-ares/c-ares/releases/download/v1.34.6/c-ares-1.34.6.tar.gz
         sha256: 912dd7cc3b3e8a79c52fd7fb9c0f4ecf0aaa73e45efda880266a2d6e26b84ef5
+        x-checker-data:
+          type: anitya
+          project-id: 5840
+          stable-only: true
+          url-template: https://github.com/c-ares/c-ares/releases/download/v$version/c-ares-$version.tar.gz
 
   # Dependency of mailsync. Executed by StanfordCppLib logs at runtime when an error occured.
   - name: addr2line
@@ -74,6 +89,11 @@ modules:
       - type: archive
         url: https://ftp.gnu.org/pub/gnu/binutils/binutils-2.46.0.tar.gz
         sha256: 8608fe44ab7de645f6ad0a898313b75338842490d609adb85c9fb2827c376af2
+        x-checker-data:
+          type: anitya
+          project-id: 7981
+          stable-only: true
+          url-template: https://ftp.gnu.org/pub/gnu/binutils/binutils-$version.tar.gz
     post-install:
       - install -Dm755 binutils/addr2line /app/bin/addr2line
 
@@ -87,6 +107,11 @@ modules:
       - type: archive
         url: https://kerberos.org/dist/krb5/1.22/krb5-1.22.2.tar.gz
         sha256: 3243ffbc8ea4d4ac22ddc7dd2a1dc54c57874c40648b60ff97009763554eaf13
+        x-checker-data:
+          type: anitya
+          project-id: 13287
+          stable-only: true
+          url-template: https://kerberos.org/dist/krb5/$major.$minor/krb5-$major.$minor.$patch.tar.gz
     cleanup:
       - /bin
       - /sbin
@@ -95,18 +120,24 @@ modules:
   - name: libsasl2
     buildsystem: autotools
     build-options:
-      cflags: --std=gnu17
+      cflags: --std=gnu17 -DHAVE_TIME_H=1
     config-opts:
       - --enable-login      # liblogin.so, disabled by default, required for some SMTP servers
       - --enable-ntlm       # libntlm.so, disabled by default, required for Microsoft 365 accounts
       - --with-gss_impl=mit # Use MIT Kerberos for GSSAPI support, which we built above.
     sources:
       - type: archive
-        url: https://github.com/cyrusimap/cyrus-sasl/releases/download/cyrus-sasl-2.1.27/cyrus-sasl-2.1.27.tar.gz
-        sha256: 26866b1549b00ffd020f188a43c258017fa1c382b3ddadd8201536f72efb05d5
+        url: https://github.com/cyrusimap/cyrus-sasl/releases/download/cyrus-sasl-2.1.28/cyrus-sasl-2.1.28.tar.gz
+        sha256: 7ccfc6abd01ed67c1a0924b353e526f1b766b21f42d4562ee635a8ebfc5bb38c
+        x-checker-data:
+          type: anitya
+          project-id: 13280
+          stable-only: true
+          url-template: https://github.com/cyrusimap/cyrus-sasl/releases/download/cyrus-sasl-$version/cyrus-sasl-$version.tar.gz
+      - type: patch
+        path: patches/libsasl2-time.patch
     cleanup:
       - /sbin
-      - /lib/sasl2/*.la
 
   - name: Mailspring
     buildsystem: simple
@@ -131,18 +162,18 @@ modules:
       prepend-path: /usr/lib/sdk/node24/bin
       env:
         CMAKE_INSTALL_PREFIX: /app          # Install to /app instead of /usr
-        CMAKE_POLICY_VERSION_MINIMUM: "3.5" # The oldest version supported by SDK 25.08
-        MAKEFLAGS: "-j$(nproc)"             # Faster compilation
+        CMAKE_POLICY_VERSION_MINIMUM: '3.5' # The oldest version supported by SDK 25.08
+        MAKEFLAGS: -j$(nproc)               # Faster compilation
 
         # Always build with debug info, flatpak will strip it into a separate .Debug extension
-        CFLAGS: "-O2 -g"                 # autotools (e.g. libetpan)
-        CXXFLAGS: "-O2 -g"               # autotools
+        CFLAGS: -O2 -g                   # autotools (e.g. libetpan)
+        CXXFLAGS: -O2 -g                 # autotools
         CMAKE_BUILD_TYPE: RelWithDebInfo # CMake (e.g. mailsync, mailcore2, SQLiteCpp)
 
         # https://github.com/flatpak/flatpak-builder-tools/tree/master/node
         XDG_CACHE_HOME: /run/build/Mailspring/flatpak-node/cache
         npm_config_cache: /run/build/Mailspring/flatpak-node/npm-cache
-        npm_config_offline: "true"
+        npm_config_offline: 'true'
     build-commands:
       # Build mailsync
       - cd mailsync && ./build.sh
@@ -176,5 +207,5 @@ cleanup:
   - /share/examples
   - /lib/cmake
   - /lib/pkgconfig
-  - /lib/*.a
-  - /lib/*.la
+  - '*.a'
+  - '*.la'
