@@ -1,0 +1,16 @@
+Taken from https://github.com/cyrusimap/cyrus-sasl/commit/266f0acf7f5e029afbb3e263437039e50cd6c262
+Without the autoconf check, so we do not have to re-run autoconf
+
+--- a/plugins/cram.c
++++ b/plugins/cram.c
+@@ -53,6 +53,10 @@
+ #endif
+ #include <fcntl.h>
+ 
++#ifdef HAVE_TIME_H
++#include <time.h>
++#endif
++
+ #include <sasl.h>
+ #include <saslplug.h>
+ #include <saslutil.h>
