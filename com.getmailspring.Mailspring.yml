@@ -54,6 +54,8 @@ modules:
     buildsystem: cmake
     config-opts:
       - -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+    license-files:
+      - README/LICENSE.md
     sources:
       - type: archive
         url: https://github.com/htacg/tidy-html5/archive/refs/tags/5.8.0.tar.gz
@@ -155,6 +157,7 @@ modules:
           - patches/mailsync-build.patch
           - patches/mailspring-gruntfile.patch
           - patches/mailspring-postinstall.patch
+          - patches/mailspring-package.patch
       - type: file
         path: mailspring.sh
       - generated-sources.json
