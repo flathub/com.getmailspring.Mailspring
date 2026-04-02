@@ -1,7 +1,7 @@
 We remove source maps from the production build for three reasons:
-- They have no reason to even be in there
-- They reduce the size of the production build
-- They contain references to a temporary build dir, making the build non reproducible
+* They have no reason to even be in there
+* Without them, we reduce the size of the production build
+* They contain references to a temporary build dir, making the build non reproducible
 
 --- a/app/build/tasks/package-task.js	2026-04-02 11:53:06.912377645 +0200
 +++ b/app/build/tasks/package-task.js	2026-04-02 11:53:39.343655349 +0200
