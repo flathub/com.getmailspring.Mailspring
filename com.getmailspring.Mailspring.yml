@@ -36,6 +36,7 @@ modules:
   # Dependency of MailCore2 and mailsync. Dynamically linked.
   - name: libctemplate
     buildsystem: autotools
+    builddir: true
     sources:
       - type: archive
         url: https://github.com/OlafvdSpek/ctemplate/archive/refs/tags/ctemplate-2.4.tar.gz
@@ -52,6 +53,7 @@ modules:
   # Dependency of mailsync. dlopens libtidy.so.5 at runtime.
   - name: libtidy
     buildsystem: cmake
+    builddir: true
     config-opts:
       - -DCMAKE_POLICY_VERSION_MINIMUM=3.5
     license-files:
@@ -71,6 +73,7 @@ modules:
   # Dependency of mailsync. Dynamically linked.
   - name: libcares
     buildsystem: cmake
+    builddir: true
     config-opts:
       - -DCARES_BUILD_TOOLS=Off
     sources:
@@ -86,6 +89,7 @@ modules:
   # Dependency of mailsync. Executed by StanfordCppLib logs at runtime when an error occured.
   - name: addr2line
     buildsystem: autotools
+    builddir: true
     no-make-install: true
     sources:
       - type: archive
@@ -102,6 +106,7 @@ modules:
   # Dependency of libsasl2. Dynamically linked if present at buildtime. Required for libgs2.so and libgssapiv2.so
   - name: libkrb5
     buildsystem: autotools
+    builddir: true
     subdir: src
     license-files:
       - NOTICE
@@ -121,6 +126,7 @@ modules:
   # Dependency of mailsync. Dynamically linked. We use this over the system libsasl2 because we need additional auth mechanisms.
   - name: libsasl2
     buildsystem: autotools
+    builddir: true
     build-options:
       cflags: --std=gnu17 -DHAVE_TIME_H=1
     config-opts:
@@ -146,8 +152,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/Foundry376/Mailspring.git
-        tag: 1.19.0
-        commit: e3e741a7d625237068b91fdb1cfb1baba17a2b7e
+        tag: 1.19.1
+        commit: 66f9e225f8d504aac03f952d5cc83c56d9d0cf3a
       - type: patch
         paths:
           - patches/libetpan-mailstream_ssl.patch
