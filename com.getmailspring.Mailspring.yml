@@ -154,13 +154,14 @@ modules:
         url: https://github.com/Foundry376/Mailspring.git
         tag: 1.19.1
         commit: 66f9e225f8d504aac03f952d5cc83c56d9d0cf3a
+      - type: file
+        path: build.sh
       - type: patch
         paths:
           - patches/libetpan-mailstream_ssl.patch
           - patches/libmailcore2-cmake.patch
           - patches/libmailcore2-zip.patch
           - patches/mailsync-cmake.patch
-          - patches/mailsync-build.patch
           - patches/mailspring-gruntfile.patch
           - patches/mailspring-postinstall.patch
           - patches/mailspring-package.patch
@@ -170,41 +171,12 @@ modules:
     build-options:
       prepend-path: /usr/lib/sdk/node24/bin
       env:
-        CMAKE_INSTALL_PREFIX: /app          # Install to /app instead of /usr
-        CMAKE_POLICY_VERSION_MINIMUM: '3.5' # The oldest version supported by SDK 25.08
-        MAKEFLAGS: -j$(nproc)               # Faster compilation
-
-        # Always build with debug info, flatpak will strip it into a separate .Debug extension
-        CFLAGS: -O2 -g                   # autotools (e.g. libetpan)
-        CXXFLAGS: -O2 -g                 # autotools
-        CMAKE_BUILD_TYPE: RelWithDebInfo # CMake (e.g. mailsync, mailcore2, SQLiteCpp)
-
         # https://github.com/flatpak/flatpak-builder-tools/tree/master/node
         XDG_CACHE_HOME: /run/build/Mailspring/flatpak-node/cache
         npm_config_cache: /run/build/Mailspring/flatpak-node/npm-cache
         npm_config_offline: 'true'
     build-commands:
-      # Build mailsync
-      - cd mailsync && ./build.sh
-
-      # Build Mailspring
-      - "jq '. + {\"desktopName\": \"com.getmailspring.Mailspring.desktop\"}' app/package.json > app/package.json.tmp && mv app/package.json.tmp app/package.json"
-      - npm ci
-      - npm run build
-
-      # Update the templates
-      - sed -i 's|<%= name %>|mailspring|g'                                             app/build/resources/linux/Mailspring.desktop.in app/build/resources/linux/mailspring.appdata.xml.in
-      - sed -i 's|<%= productName %>|Mailspring|g'                                      app/build/resources/linux/Mailspring.desktop.in app/build/resources/linux/mailspring.appdata.xml.in
-      - sed -i 's|<%= description %>|The best email app for people and teams at work|g' app/build/resources/linux/Mailspring.desktop.in app/build/resources/linux/mailspring.appdata.xml.in
-
-      # Package the app
-      - cp -r app/dist/mailspring-linux-* /app/share/mailspring && find /app/share/mailspring -type d -exec chmod 755 {} \;
-      - install -Dm755 mailspring.sh /app/bin/mailspring
-      - install -Dm644 app/build/resources/linux/Mailspring.desktop.in /app/share/applications/Mailspring.desktop
-      - install -Dm644 app/build/resources/linux/mailspring.appdata.xml.in /app/share/appdata/mailspring.appdata.xml
-      - for size in 16 32 64 128 256 512; do
-          [[ -e "app/build/resources/linux/icons/${size}.png" ]] && install -Dm644 "app/build/resources/linux/icons/${size}.png" "/app/share/icons/hicolor/${size}x${size}/apps/mailspring.png";
-        done
+      - ./build.sh
     cleanup:
       - /bin/libetpan-config
       - /share/mailspring/chrome-sandbox # Not needed, we use zypak

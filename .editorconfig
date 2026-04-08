@@ -22,3 +22,8 @@ tab_width = 4
 indent_style = unset
 indent_size = unset
 trim_trailing_whitespace = false
+
+[Mailspring/**]
+indent_style = unset
+indent_size = unset
+trim_trailing_whitespace = false
