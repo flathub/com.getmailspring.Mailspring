@@ -13,22 +13,24 @@
 
 set -e
 
+# Alias these, to make the code more generic and adaptable to other build systems
+SRC_DIR="$FLATPAK_BUILDER_BUILDDIR" # /run/build/Mailspring
+DST_DIR="$FLATPAK_DEST"             # /app
+PKG_ID="$FLATPAK_ID"                # com.mailspring.Mailspring
+
 # Faster compilation
-export MAKEFLAGS="-j$FLATPAK_BUILDER_N_JOBS"
+export MAKEFLAGS="-j${FLATPAK_BUILDER_N_JOBS:-$(nproc)}"
 
 # Set the prefix to /app, as /usr is not writable in the flatpak sandbox
 # Also required to find the modules we built and installed to /app
-export CMAKE_PREFIX_PATH="$FLATPAK_DEST"
+export CMAKE_PREFIX_PATH="$DST_DIR"
 
 # The oldest version supported by SDK 25.08
 export CMAKE_POLICY_VERSION_MINIMUM="3.5"
 
-# /run/build/Mailspring
-SRC_DIR="$FLATPAK_BUILDER_BUILDDIR"
-
 echo "Building and installing libetpan..."
 cd "$SRC_DIR/mailsync/Vendor/libetpan"
-./autogen.sh --prefix="$FLATPAK_DEST"
+./autogen.sh --prefix="$DST_DIR" --with-openssl
 make
 make install
 
@@ -49,7 +51,7 @@ cp ./mailsync "$SRC_DIR/app/mailsync"
 
 echo "Building Mailspring..."
 cd "$SRC_DIR"
-jq ". + {\"desktopName\": \"${FLATPAK_ID}.desktop\"}" app/package.json > app/package.json.tmp && mv app/package.json.tmp app/package.json
+jq ". + {\"desktopName\": \"${PKG_ID}.desktop\"}" app/package.json > app/package.json.tmp && mv app/package.json.tmp app/package.json
 npm ci
 npm run build
 
@@ -66,12 +68,12 @@ template_fillin "description"
 
 echo "Installing Mailspring..."
 cd "$SRC_DIR"
-cp -r app/dist/mailspring-linux-* $FLATPAK_DEST/share/mailspring && find $FLATPAK_DEST/share/mailspring -type d -exec chmod 755 {} \;
-install -Dm755 mailspring.sh $FLATPAK_DEST/bin/mailspring
-install -Dm644 app/build/resources/linux/Mailspring.desktop.in $FLATPAK_DEST/share/applications/Mailspring.desktop
-install -Dm644 app/build/resources/linux/mailspring.appdata.xml.in $FLATPAK_DEST/share/appdata/mailspring.appdata.xml
+cp -r app/dist/mailspring-linux-* $DST_DIR/share/mailspring && find $DST_DIR/share/mailspring -type d -exec chmod 755 {} \;
+install -Dm755 mailspring.sh $DST_DIR/bin/mailspring
+install -Dm644 app/build/resources/linux/Mailspring.desktop.in $DST_DIR/share/applications/Mailspring.desktop
+install -Dm644 app/build/resources/linux/mailspring.appdata.xml.in $DST_DIR/share/appdata/mailspring.appdata.xml
 for size in 16 32 64 128 256 512; do
-  [[ -e "app/build/resources/linux/icons/${size}.png" ]] && install -Dm644 "app/build/resources/linux/icons/${size}.png" "$FLATPAK_DEST/share/icons/hicolor/${size}x${size}/apps/mailspring.png";
+  [[ -e "app/build/resources/linux/icons/${size}.png" ]] && install -Dm644 "app/build/resources/linux/icons/${size}.png" "$DST_DIR/share/icons/hicolor/${size}x${size}/apps/mailspring.png";
 done
 
 echo "Flatpak build complete!"
