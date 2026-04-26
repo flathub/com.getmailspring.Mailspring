@@ -152,8 +152,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/Foundry376/Mailspring.git
-        tag: 1.19.1
-        commit: 66f9e225f8d504aac03f952d5cc83c56d9d0cf3a
+        tag: 1.20.1
+        commit: 2b045d7ee991baf0e859747cdc6f399a48c157fb
       - type: file
         path: build.sh
       - type: patch
