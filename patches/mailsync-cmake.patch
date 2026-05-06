@@ -31,9 +31,22 @@ Freedesktop SDK also doesn't ship static libraries, so this saves us from having
  #Set Linker flags
  set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 
+--- a/mailsync/CMakeLists.txt
++++ b/mailsync/CMakeLists.txt
+@@ -3,9 +3,6 @@
+ 
+ SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-pragmas")
+ 
+-#Set Linker flags
+-set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
+-
+ 
+ find_package (PkgConfig REQUIRED)
+ pkg_check_modules (GLIB REQUIRED glib-2.0)
+
 --- a/mailsync/CMakeLists.txt	2026-02-22 19:33:07.444569446 +0100
 +++ b/mailsync/CMakeLists.txt	2026-02-22 19:34:03.334165422 +0100
-@@ -66,34 +66,34 @@
+@@ -63,34 +63,34 @@
 
    target_link_libraries(mailsync libMailCore.a)
    target_link_libraries(mailsync ${GLIB_LIBRARIES})

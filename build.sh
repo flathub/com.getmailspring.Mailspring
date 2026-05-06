@@ -52,8 +52,8 @@ cp ./mailsync "$SRC_DIR/app/mailsync"
 echo "Building Mailspring..."
 cd "$SRC_DIR"
 jq ". + {\"desktopName\": \"${PKG_ID}.desktop\"}" app/package.json > app/package.json.tmp && mv app/package.json.tmp app/package.json
-npm ci
-npm run build
+npm ci --no-audit --no-fund
+npm run build -- --skip-installers
 
 echo "Filling in template files..."
 function template_fillin() {
