@@ -152,15 +152,12 @@ modules:
     sources:
       - type: git
         url: https://github.com/Foundry376/Mailspring.git
-        tag: 1.21.0
-        commit: 561a81a36994eedc1ff588994a45d2e86455d585
+        tag: 1.21.1
+        commit: ae68e88121c8e98f61c8f10aa6a6161f4c8444b1
       - type: file
         path: build.sh
       - type: patch
         paths:
-          - patches/libetpan-mailstream_ssl.patch
-          - patches/libmailcore2-cmake.patch
-          - patches/libmailcore2-zip.patch
           - patches/mailsync-cmake.patch
           - patches/mailspring-postinstall.patch
       - type: file
