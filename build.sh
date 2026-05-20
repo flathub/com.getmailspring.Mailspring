@@ -25,9 +25,6 @@ export MAKEFLAGS="-j${FLATPAK_BUILDER_N_JOBS:-$(nproc)}"
 # Also required to find the modules we built and installed to /app
 export CMAKE_PREFIX_PATH="$DST_DIR"
 
-# The oldest version supported by SDK 25.08
-export CMAKE_POLICY_VERSION_MINIMUM="3.5"
-
 echo "Building and installing libetpan..."
 cd "$SRC_DIR/mailsync/Vendor/libetpan"
 ./autogen.sh --prefix="$DST_DIR" --with-openssl

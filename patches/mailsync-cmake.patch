@@ -1,8 +1,6 @@
 Mailspring uses dpkg-architecture to detect the multiarch library path, but that doesn't work on non-Debian-based distributions, like our freedesktop SDK.
 Using gcc -print-multiarch instead is portable and gives the same output.
 
-Flatpak sets sensible defaults for CXXFLAGS and CFLAGS, keep them
-
 Mailsync wants to statically link against a lot of libs, because it fears different versions between buildtime and runtime.
 This is not a problem for flatpak, because we always have the exact same version.
 Freedesktop SDK also doesn't ship static libraries, so this saves us from having to build them ourselves.
@@ -18,18 +16,6 @@ Freedesktop SDK also doesn't ship static libraries, so this saves us from having
      OUTPUT_VARIABLE DEB_HOST_MULTIARCH
      OUTPUT_STRIP_TRAILING_WHITESPACE
      ERROR_QUIET
-
---- a/mailsync/CMakeLists.txt	2026-04-08 13:37:09.447045919 +0200
-+++ b/mailsync/CMakeLists.txt	2026-04-08 13:40:16.956798048 +0200
-@@ -1,7 +1,7 @@
- cmake_minimum_required (VERSION 3.1 FATAL_ERROR)
- project (mailsync) 
- 
--SET (CMAKE_CXX_FLAGS   "-Wno-unknown-pragmas")
-+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-pragmas")
- 
- #Set Linker flags
- set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 
 --- a/mailsync/CMakeLists.txt
 +++ b/mailsync/CMakeLists.txt
