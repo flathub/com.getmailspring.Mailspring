@@ -93,8 +93,8 @@ modules:
     no-make-install: true
     sources:
       - type: archive
-        url: https://ftp.gnu.org/pub/gnu/binutils/binutils-2.46.0.tar.gz
-        sha256: 8608fe44ab7de645f6ad0a898313b75338842490d609adb85c9fb2827c376af2
+        url: https://ftp.gnu.org/pub/gnu/binutils/binutils-2.46.1.tar.gz
+        sha256: 364c8faa19ea46c44089c2d59c1fee6eda9a273787d0fe8ab9dfb249069c6aee
         x-checker-data:
           type: anitya
           project-id: 7981
