@@ -5,11 +5,11 @@ base: org.electronjs.Electron2.BaseApp
 base-version: '25.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.node24
+  - org.freedesktop.Sdk.Extension.node22
 command: mailspring
 separate-locales: false
 rename-icon: mailspring
-rename-appdata-file: mailspring.appdata.xml
+rename-appdata-file: mailspring.metainfo.xml
 rename-desktop-file: Mailspring.desktop
 
 finish-args:
@@ -91,6 +91,12 @@ modules:
     buildsystem: autotools
     builddir: true
     no-make-install: true
+    config-opts:
+      - --disable-gdb
+      - --disable-gprof
+      - --disable-gold
+      - --disable-ld
+      - --disable-nls
     sources:
       - type: archive
         url: https://ftp.gnu.org/pub/gnu/binutils/binutils-2.46.1.tar.gz
@@ -152,8 +158,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/Foundry376/Mailspring.git
-        tag: 1.21.1
-        commit: ae68e88121c8e98f61c8f10aa6a6161f4c8444b1
+        tag: 1.22.0
+        commit: b29ea0e65c4794eb6531134992d5fb19e2e02abd
       - type: file
         path: build.sh
       - type: patch
@@ -164,7 +170,7 @@ modules:
         path: mailspring.sh
       - generated-sources.json
     build-options:
-      prepend-path: /usr/lib/sdk/node24/bin
+      prepend-path: /usr/lib/sdk/node22/bin
       env:
         # https://github.com/flatpak/flatpak-builder-tools/tree/master/node
         XDG_CACHE_HOME: /run/build/Mailspring/flatpak-node/cache

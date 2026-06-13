@@ -68,7 +68,7 @@ cd "$SRC_DIR"
 cp -r app/dist/mailspring-linux-* $DST_DIR/share/mailspring && find $DST_DIR/share/mailspring -type d -exec chmod 755 {} \;
 install -Dm755 mailspring.sh $DST_DIR/bin/mailspring
 install -Dm644 app/build/resources/linux/Mailspring.desktop.in $DST_DIR/share/applications/Mailspring.desktop
-install -Dm644 app/build/resources/linux/mailspring.appdata.xml.in $DST_DIR/share/appdata/mailspring.appdata.xml
+install -Dm644 app/build/resources/linux/mailspring.appdata.xml.in $DST_DIR/share/metainfo/mailspring.metainfo.xml
 for size in 16 32 64 128 256 512; do
   [[ -e "app/build/resources/linux/icons/${size}.png" ]] && install -Dm644 "app/build/resources/linux/icons/${size}.png" "$DST_DIR/share/icons/hicolor/${size}x${size}/apps/mailspring.png";
 done
