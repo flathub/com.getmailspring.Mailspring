@@ -5,12 +5,9 @@ base: org.electronjs.Electron2.BaseApp
 base-version: '25.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.node22
+  - org.freedesktop.Sdk.Extension.node24
 command: mailspring
 separate-locales: false
-rename-icon: mailspring
-rename-appdata-file: mailspring.metainfo.xml
-rename-desktop-file: Mailspring.desktop
 
 finish-args:
   # Electron apps need this to work properly
@@ -28,9 +25,6 @@ finish-args:
 
   # System tray
   - --talk-name=org.kde.StatusNotifierWatcher
-
-  # Battery awareness
-  - --system-talk-name=org.freedesktop.UPower
 
 modules:
   # Dependency of MailCore2 and mailsync. Dynamically linked.
@@ -52,7 +46,7 @@ modules:
 
   # Dependency of mailsync. dlopens libtidy.so.5 at runtime.
   - name: libtidy
-    buildsystem: cmake
+    buildsystem: cmake-ninja
     builddir: true
     config-opts:
       - -DCMAKE_POLICY_VERSION_MINIMUM=3.5
@@ -72,14 +66,15 @@ modules:
 
   # Dependency of mailsync. Dynamically linked.
   - name: libcares
-    buildsystem: cmake
+    buildsystem: cmake-ninja
     builddir: true
     config-opts:
       - -DCARES_BUILD_TOOLS=Off
+      - -DCARES_SYMBOL_HIDING=ON
     sources:
       - type: archive
-        url: https://github.com/c-ares/c-ares/releases/download/v1.34.6/c-ares-1.34.6.tar.gz
-        sha256: 912dd7cc3b3e8a79c52fd7fb9c0f4ecf0aaa73e45efda880266a2d6e26b84ef5
+        url: https://github.com/c-ares/c-ares/releases/download/v1.34.8/c-ares-1.34.8.tar.gz
+        sha256: c222b6d681096f9444d2c4863d2c1174019e27cacca0a4a5c114d36dd7d7bf78
         x-checker-data:
           type: anitya
           project-id: 5840
@@ -158,19 +153,20 @@ modules:
     sources:
       - type: git
         url: https://github.com/Foundry376/Mailspring.git
-        tag: 1.22.0
-        commit: b29ea0e65c4794eb6531134992d5fb19e2e02abd
+        tag: 1.23.0
+        commit: 5b37181118243439d7777e863faf6e7138de60b0
       - type: file
         path: build.sh
       - type: patch
         paths:
           - patches/mailsync-cmake.patch
           - patches/mailspring-postinstall.patch
+          - patches/mailspring-build.patch
       - type: file
         path: mailspring.sh
       - generated-sources.json
     build-options:
-      prepend-path: /usr/lib/sdk/node22/bin
+      prepend-path: /usr/lib/sdk/node24/bin
       env:
         # https://github.com/flatpak/flatpak-builder-tools/tree/master/node
         XDG_CACHE_HOME: /run/build/Mailspring/flatpak-node/cache
