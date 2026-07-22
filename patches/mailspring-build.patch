@@ -1,0 +1,14 @@
+https://github.com/flatpak/flatpak-builder-tools/issues/452
+
+--- a/app/build/build.js
++++ b/app/build/build.js
+@@ -337,6 +337,9 @@
+       runCopySymlinkedPackages,
+       runTranspilers,
+       runUploadSourceMapsToSentry,
+     ],
++    download: {
++      unsafelyDisableChecksums: true
++    },
+   };
+ }
