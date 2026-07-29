@@ -123,6 +123,8 @@ modules:
     cleanup:
       - /bin
       - /sbin
+      - /var
+      - /share/et
 
   # Dependency of mailsync. Dynamically linked. We use this over the system libsasl2 because we need additional auth mechanisms.
   - name: libsasl2
