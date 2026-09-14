@@ -18,11 +18,6 @@ finish-args:
   - --socket=pulseaudio
   - --device=dri
 
-  # Secret storage
-  - --talk-name=org.freedesktop.secrets
-  - --talk-name=org.kde.kwalletd5
-  - --talk-name=org.kde.kwalletd6
-
   # System tray
   - --talk-name=org.kde.StatusNotifierWatcher
 
@@ -153,8 +148,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/Foundry376/Mailspring.git
-        tag: 1.23.0
-        commit: 5b37181118243439d7777e863faf6e7138de60b0
+        tag: 1.24.0
+        commit: 8e121c6439f6e225950277b890e9765d4f34e169
       - type: file
         path: build.sh
       - type: patch
@@ -185,5 +180,6 @@ cleanup:
   - /share/examples
   - /lib/cmake
   - /lib/pkgconfig
+  - /lib/libetpan.so*
   - '*.a'
   - '*.la'
