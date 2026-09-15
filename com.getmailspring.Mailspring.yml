@@ -18,6 +18,11 @@ finish-args:
   - --socket=pulseaudio
   - --device=dri
 
+  # Secret storage
+  - --talk-name=org.freedesktop.secrets
+  - --talk-name=org.kde.kwalletd5
+  - --talk-name=org.kde.kwalletd6
+
   # System tray
   - --talk-name=org.kde.StatusNotifierWatcher
 
@@ -150,8 +155,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/Foundry376/Mailspring.git
-        tag: 1.24.0
-        commit: 8e121c6439f6e225950277b890e9765d4f34e169
+        tag: 1.24.1
+        commit: 85282e69602aa1af4b151bea186e31aac4330e7d
       - type: file
         path: build.sh
       - type: patch
@@ -174,6 +179,7 @@ modules:
     cleanup:
       - /bin/libetpan-config
       - /share/mailspring/chrome-sandbox # Not needed, we use zypak
+      - /lib/libetpan.so* # mailsync links it statically
 
 cleanup:
   - /include
@@ -182,6 +188,5 @@ cleanup:
   - /share/examples
   - /lib/cmake
   - /lib/pkgconfig
-  - /lib/libetpan.so*
   - '*.a'
   - '*.la'

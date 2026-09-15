@@ -1,6 +1,6 @@
 # Mailspring Flatpak
 
-Unofficial Flatpak package for Mailspring ([Website](https://getmailspring.com/), [GitHub](https://github.com/Foundry376/Mailspring)).
+Official Flatpak package for Mailspring ([Website](https://getmailspring.com/), [GitHub](https://github.com/Foundry376/Mailspring)).
 
 ## Building & Installing
 
