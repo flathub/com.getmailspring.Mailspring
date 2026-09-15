@@ -12,4 +12,7 @@ else
     EXTRA_ARGS="--ozone-platform=x11"
 fi
 
-exec zypak-wrapper /app/share/mailspring/mailspring ${EXTRA_ARGS} "$@"
+exec zypak-wrapper /app/share/mailspring/mailspring \
+    ${EXTRA_ARGS} \
+    --enable-features=DbusSecretPortal,SecretPortalKeyProviderUseForEncryption \
+    "$@"
