@@ -1,11 +1,11 @@
 app-id: com.getmailspring.Mailspring
 runtime: org.freedesktop.Platform
-runtime-version: '25.08'
+runtime-version: '26.08'
 base: org.electronjs.Electron2.BaseApp
-base-version: '25.08'
+base-version: '26.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.node24
+  - org.freedesktop.Sdk.Extension.node26
 command: mailspring
 separate-locales: false
 
@@ -33,13 +33,13 @@ modules:
     builddir: true
     sources:
       - type: archive
-        url: https://github.com/OlafvdSpek/ctemplate/archive/refs/tags/ctemplate-2.4.tar.gz
-        sha256: ccc4105b3dc51c82b0f194499979be22d5a14504f741115be155bd991ee93cfa
-        x-checker-data:
-          type: anitya
-          project-id: 376
-          stable-only: true
-          url-template: https://github.com/OlafvdSpek/ctemplate/archive/refs/tags/ctemplate-$version.tar.gz
+        url: https://github.com/OlafvdSpek/ctemplate/archive/8352c4135699cb18e75f8005b46da681864de04d.zip
+        sha256: 3f4be87ae08ae45f9f50476e721f79137966908f5f42a18ff966f925e00b78e3
+        # x-checker-data:
+        #   type: anitya
+        #   project-id: 376
+        #   stable-only: true
+        #   url-template: https://github.com/OlafvdSpek/ctemplate/archive/refs/tags/ctemplate-$version.tar.gz
     cleanup:
       - /bin # template-converter, make_tpl_varnames_h, diff_tpl_auto_escape
       - /lib/*_nothreads.*
@@ -120,6 +120,8 @@ modules:
           project-id: 13287
           stable-only: true
           url-template: https://kerberos.org/dist/krb5/$major.$minor/krb5-$major.$minor.$patch.tar.gz
+      - type: patch
+        path: patches/libkrb5-strchr.patch
     cleanup:
       - /bin
       - /sbin
@@ -168,7 +170,7 @@ modules:
         path: mailspring.sh
       - generated-sources.json
     build-options:
-      prepend-path: /usr/lib/sdk/node24/bin
+      prepend-path: /usr/lib/sdk/node26/bin
       env:
         # https://github.com/flatpak/flatpak-builder-tools/tree/master/node
         XDG_CACHE_HOME: /run/build/Mailspring/flatpak-node/cache
