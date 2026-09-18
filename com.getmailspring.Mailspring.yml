@@ -7,7 +7,6 @@ sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.node26
 command: mailspring
-separate-locales: false
 
 finish-args:
   # Electron apps need this to work properly
@@ -182,6 +181,28 @@ modules:
       - /bin/libetpan-config
       - /share/mailspring/chrome-sandbox # Not needed, we use zypak
       - /lib/libetpan.so* # mailsync links it statically
+
+  # Adapted from https://github.com/flathub/org.electronjs.Electron2.BaseApp/pull/40
+  - name: setup-separate-locales
+    buildsystem: simple
+    build-commands:
+      - ./setup-separate-locales ${FLATPAK_DEST}/share/mailspring
+    sources:
+      - type: script
+        dest-filename: setup-separate-locales
+        commands:
+          - |
+            set -e
+
+            APP_LOCALES_ROOT="$1/locales"
+            RUNTIME_LOCALES_ROOT="${FLATPAK_DEST}/share/runtime/locale"
+
+            for lang in "${APP_LOCALES_ROOT}"/*.pak; do
+              LOCALE="$(basename -s .pak "${lang}")"
+              runtime_locale_dir="${RUNTIME_LOCALES_ROOT}/${LOCALE%%-*}/"
+              install -Dm644 -t "${runtime_locale_dir}" "${lang}"
+              ln -sf "${runtime_locale_dir}$(basename "${lang}")" "${APP_LOCALES_ROOT}/$(basename "${lang}")"
+            done
 
 cleanup:
   - /include
