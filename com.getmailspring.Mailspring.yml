@@ -17,11 +17,6 @@ finish-args:
   - --socket=pulseaudio
   - --device=dri
 
-  # Secret storage
-  - --talk-name=org.freedesktop.secrets
-  - --talk-name=org.kde.kwalletd5
-  - --talk-name=org.kde.kwalletd6
-
   # System tray
   - --talk-name=org.kde.StatusNotifierWatcher
 
